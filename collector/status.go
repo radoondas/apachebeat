@@ -9,10 +9,12 @@ import (
 	"strconv"
 	"strings"
 
-	//"github.com/elastic/libbeat/logp"
+	"github.com/elastic/libbeat/logp"
 )
 
-// StubCollector is a Collector that collects Apache HTTPD server status page.
+const selector = "apachebeat"
+
+// StubCollector is a Collector that collects Apache HTTPD server-status page.
 type StubCollector struct {
 	requests int
 }
@@ -48,7 +50,6 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 	// ConnsAsyncWriting: 527
 	// ConnsAsyncKeepAlive: 1321
 	// ConnsAsyncClosing: 2785
-	// Scoreboard: _W____........___...............................................................................................................................................................................................................................................
 
 	var re *regexp.Regexp
 	scanner := bufio.NewScanner(res.Body)
@@ -79,8 +80,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 	//set hostname from url
 	hostname = u.Host
-	fmt.Print("Hostname: ")
-	fmt.Println(hostname)
+	logp.Debug(selector, "URL Hostname: %v", hostname)
 
 	var (
 		tot_s          int
@@ -97,16 +97,16 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 	)
 
 	for scanner.Scan() {
-		fmt.Println("read: ", scanner.Text())
+		// fmt.Println("read: ", scanner.Text())
+		logp.Debug(selector, "Reading from body: %v", scanner.Text())
 
 		// Total Accesses: 16147
 		re = regexp.MustCompile("Total Accesses: (\\d+)")
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			// logp.Debug("Parsed - Total Accesses: ")
 			total_access, _ = strconv.Atoi(matches[1])
-			fmt.Println(total_access)
+			logp.Debug(selector, "Total Accesses: %v", total_access)
 		}
 
 		//Total kBytes: 12988
@@ -115,7 +115,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			total_kbytes, _ = strconv.Atoi(matches[1])
-			fmt.Println(total_kbytes)
+			logp.Debug(selector, "Total kBytes: %v", total_kbytes)
 		}
 
 		// CPULoad: .000408393
@@ -123,9 +123,10 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
+			//TODO
 			// cpu_load, _ = strconv.Atoi(matches[1])
 			cpu_load, _ = strconv.ParseFloat(matches[1], 64)
-			fmt.Println(cpu_load)
+			logp.Debug(selector, "CPULoad: %v", cpu_load)
 		}
 
 		// Uptime: 3229728
@@ -134,7 +135,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			uptime, _ = strconv.Atoi(matches[1])
-			fmt.Println(uptime)
+			logp.Debug(selector, "Uptime: %v", uptime)
 		}
 
 		// ReqPerSec: .00499949
@@ -143,7 +144,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			req_per_sec, _ = strconv.Atoi(matches[1])
-			fmt.Println(req_per_sec)
+			logp.Debug(selector, "ReqPerSec: %v", req_per_sec)
 		}
 
 		// BytesPerSec: 4.1179
@@ -152,7 +153,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			bytes_per_sec, _ = strconv.Atoi(matches[1])
-			fmt.Println(bytes_per_sec)
+			logp.Debug(selector, "BytesPerSec: %v", bytes_per_sec)
 		}
 
 		// BytesPerReq: 823.665
@@ -161,7 +162,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			bytes_per_req, _ = strconv.Atoi(matches[1])
-			fmt.Println(bytes_per_req)
+			logp.Debug(selector, "BytesPerReq: %v", bytes_per_req)
 		}
 
 		// BusyWorkers: 1
@@ -170,7 +171,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			busy_workers, _ = strconv.Atoi(matches[1])
-			fmt.Println(busy_workers)
+			logp.Debug(selector, "BusyWorkers: %v", busy_workers)
 		}
 
 		// IdleWorkers: 8
@@ -179,17 +180,16 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			idle_workers, _ = strconv.Atoi(matches[1])
-			fmt.Println(idle_workers)
+			logp.Debug(selector, "IdleWorkers: %v", idle_workers)
 		}
 
-		// TODO
 		// ConnsTotal: 4940
 		re = regexp.MustCompile("ConnsTotal: (\\d+)")
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
 			conns_total, _ = strconv.Atoi(matches[1])
-			fmt.Println(conns_total)
+			logp.Debug(selector, "ConnsTotal: %v", conns_total)
 		}
 
 		// ConnsAsyncWriting: 527
@@ -198,7 +198,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			conns_async_writing, _ = strconv.Atoi(matches[1])
-			fmt.Println(conns_async_writing)
+			logp.Debug(selector, "ConnsAsyncWriting: %v", conns_async_writing)
 		}
 
 		// ConnsAsyncKeepAlive: 1321
@@ -207,7 +207,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			conns_async_keep_alive, _ = strconv.Atoi(matches[1])
-			fmt.Println(conns_async_keep_alive)
+			logp.Debug(selector, "ConnsAsyncKeepAlive: %v", conns_async_keep_alive)
 		}
 
 		// ConnsAsyncClosing: 2785
@@ -216,7 +216,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			//
 		} else {
 			conns_async_closing, _ = strconv.Atoi(matches[1])
-			fmt.Println(conns_async_closing)
+			logp.Debug(selector, "ConnsAsyncClosing: %v", conns_async_closing)
 		}
 
 		// Scoreboard Key:
@@ -227,7 +227,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		// Scoreboard: _W____........___...............................................................................................................................................................................................................................................
 		re = regexp.MustCompile("Scoreboard: (\\w+)")
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			fmt.Println("Scoreboard pruser", scanner.Text())
+			//
 		} else {
 			scr := strings.Split(scanner.Text(), " ")
 
@@ -243,17 +243,17 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			tot_i = strings.Count(scr[1], "I")
 			tot_dot = strings.Count(scr[1], ".")
 
-			fmt.Println("Waiting for Connection (_): ", tot_underscore)
-			fmt.Println("Starting up (S): ", tot_s)
-			fmt.Println("Reading Request (R): ", tot_r)
-			fmt.Println("Sending Reply (W): ", tot_w)
-			fmt.Println("Keepalive (read) (K): ", tot_k)
-			fmt.Println("DNS Lookup (D): ", tot_d)
-			fmt.Println("Closing connection (C): ", tot_c)
-			fmt.Println("Logging (L): ", tot_l)
-			fmt.Println("Gracefully finishing (G): ", tot_g)
-			fmt.Println("Idle cleanup of worker (I): ", tot_i)
-			fmt.Println("Open slot with no current process (.): ", tot_dot)
+			logp.Debug(selector, "Waiting for Connection (_): %v", tot_underscore)
+			logp.Debug(selector, "Starting up (S): %v", tot_s)
+			logp.Debug(selector, "Reading Request (R): %v", tot_r)
+			logp.Debug(selector, "Sending Reply (W): %v", tot_w)
+			logp.Debug(selector, "Keepalive (read) (K): %v", tot_k)
+			logp.Debug(selector, "DNS Lookup (D): %v", tot_d)
+			logp.Debug(selector, "Closing connection (C): %v", tot_c)
+			logp.Debug(selector, "Logging (L): %v", tot_l)
+			logp.Debug(selector, "Gracefully finishing (G): %v", tot_g)
+			logp.Debug(selector, "Idle cleanup of worker (I): %v", tot_i)
+			logp.Debug(selector, "Open slot with no current process (.): %v", tot_dot)
 		}
 	}
 

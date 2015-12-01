@@ -58,21 +58,6 @@ func (ab *ApacheBeat) Config(b *beat.Beat) error {
 		ab.urls[i] = u
 	}
 
-	// var f string
-	// if ab.AbConfig.Input.Format != "" {
-	//  f = ab.AbConfig.Input.Format
-	// } else {
-	//  f = "stub"
-	// }
-	// if f != "stub" && f != "plus" {
-	//  err = fmt.Errorf("%s is an unsupported format", f)
-	// }
-	// if err != nil {
-	//  logp.Err("Invalid Nginx status format: %v", err)
-	//  return err
-	// }
-	// ab.format = f
-
 	if ab.AbConfig.Input.Period != nil {
 		ab.period = time.Duration(*ab.AbConfig.Input.Period) * time.Second
 	} else {
@@ -81,7 +66,6 @@ func (ab *ApacheBeat) Config(b *beat.Beat) error {
 
 	logp.Debug(selector, "Init apachebeat")
 	logp.Debug(selector, "Watch %v", ab.urls)
-	//logp.Debug(selector, "Format %v", ab.format)
 	logp.Debug(selector, "Period %v", ab.period)
 
 	return nil

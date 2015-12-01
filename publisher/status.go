@@ -17,7 +17,7 @@ func NewStubPublisher(c publisher.Client) *StubPublisher {
 	return &StubPublisher{client: c}
 }
 
-// Publish Apache server-status.
+// Publish Apache server-status page.
 func (p *StubPublisher) Publish(s map[string]interface{}, source string) {
 
 	p.client.PublishEvent(common.MapStr{
