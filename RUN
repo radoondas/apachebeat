@@ -10,8 +10,16 @@ go get github.com/radoondas/apachebeat
 # Meanwhile setup your ElasticSearch
 # Setup Kibana - example dashoords coming soon
 
+# Build 
+cd ~/workspace/go/src/github.com/radoondas/apachebeat
+go install
+
+# Run
 cd ~/workspace/go/bin
 ./apachebeat  -e -v -d apachebeat -c ~/workspace/go/src/github.com/radoondas/apachebeat/etc/apachebeat.yml
 
 # No debug options - just do straight to your ES
 ./apachebeat  -e -c ~/workspace/go/src/github.com/radoondas/apachebeat/etc/apachebeat.yml
+
+TODO:
+- Check Makefile
