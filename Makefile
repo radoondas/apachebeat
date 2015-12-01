@@ -1,7 +1,7 @@
 PREFIX?=/build
 
 GOFILES = $(shell find . -type f -name '*.go')
-nginxbeat: $(GOFILES)
+apachebeat: $(GOFILES)
 	go build
 
 .PHONY: test
@@ -10,4 +10,4 @@ test:
 
 .PHONY: clean
 clean:
-	rm nginxbeat || true
+	rm apachebeat || true

@@ -24,7 +24,7 @@ func NewStubCollector() Collector {
 	return &StubCollector{requests: 0}
 }
 
-// Collect Nginx stub status from given url.
+// Collect Apache HTTPD server-status from given url.
 func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 	res, err := http.Get(u.String())
 	if err != nil {
