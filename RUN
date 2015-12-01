@@ -1,0 +1,17 @@
+# Setuop Go lang environment (https://golang.org/doc/install)
+# add to your .bashrc
+export GOROOT="$HOME/opt/go"
+export GOPATH="$HOME/workspace/go"
+export PATH="$HOME/opt/go/bin:"$PATH
+
+# Get apache beat
+go get github.com/radoondas/apachebeat
+
+# Meanwhile setup your ElasticSearch
+# Setup Kibana - example dashoords coming soon
+
+cd ~/workspace/go/bin
+./apachebeat  -e -v -d apachebeat -c ~/workspace/go/src/github.com/radoondas/apachebeat/etc/apachebeat.yml
+
+# No debug options - just do straight to your ES
+./apachebeat  -e -c ~/workspace/go/src/github.com/radoondas/apachebeat/etc/apachebeat.yml
