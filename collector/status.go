@@ -219,7 +219,6 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			fmt.Println(conns_async_closing)
 		}
 
-		fmt.Println("aaaaaaaaaaaaaaaaaaaaaaa")
 		// Scoreboard Key:
 		// "_" Waiting for Connection, "S" Starting up, "R" Reading Request,
 		// "W" Sending Reply, "K" Keepalive (read), "D" DNS Lookup,
@@ -257,7 +256,6 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			fmt.Println("Open slot with no current process (.): ", tot_dot)
 		}
 	}
-	fmt.Println("bbbbbbbbbbbbbbbbbbbbbbbb")
 
 	return map[string]interface{}{
 		"total_access":           total_access,
