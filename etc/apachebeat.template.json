@@ -23,6 +23,26 @@
       "properties": {
         "@timestamp": {
           "type": "date"
+        },
+        "bytes_per_req": {
+          "doc_values": "true",
+          "type": "float"
+        },
+        "bytes_per_sec": {
+          "doc_values": "true",
+          "type": "float"
+        },
+        "cpu_load": {
+          "doc_values": "true",
+          "type": "float"
+        },
+        "req_per_sec": {
+          "doc_values": "true",
+          "type": "float"
+        },
+        "uptime": {
+          "doc_values": "true",
+          "type": "float"
         }
       }
     }
