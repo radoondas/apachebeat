@@ -27,6 +27,7 @@ go install
 
 ## Run ApacheBeat
 
+Following command will execute ApacheBeat with debug option and will not index results in to ES. Instead, you will see output on the screen.
 ```bash
 cd ~/workspace/go/bin
 ./apachebeat  -e -v -d apachebeat -c ~/workspace/go/src/github.com/radoondas/apachebeat/etc/apachebeat.yml
