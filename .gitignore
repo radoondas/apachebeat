@@ -1,1 +1,22 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_obj
+_test
+
+*.exe
+*.test
+*.prof
+
+# Golang 1.5+ vendor folder
+vendor/
+
+# build
+apachebeat
 /.project
+
+# IntelliJ IDEA
+.idea/

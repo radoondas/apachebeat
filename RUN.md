@@ -25,6 +25,12 @@ cd ~/workspace/go/src/github.com/radoondas/apachebeat
 go install
 ```
 
+## Import template
+```bash
+cd ~/workspace/go/src/github.com/radoondas/apachebeat/etc
+curl -XPUT 'http://localhost:9200/_template/apachebeat' -d@apachebeat.template.json
+```
+
 ## Run ApacheBeat
 
 Following command will execute ApacheBeat with debug option and will not index results in to ES. Instead, you will see output on the screen.
