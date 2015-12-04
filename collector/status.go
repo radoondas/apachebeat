@@ -59,11 +59,11 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 	var (
 		total_access           int
 		total_kbytes           int
-		cpu_load               float64
+		cpu_load               string
 		uptime                 int
-		req_per_sec            int
-		bytes_per_sec          int
-		bytes_per_req          int
+		req_per_sec            string
+		bytes_per_sec          string
+		bytes_per_req          string
 		busy_workers           int
 		idle_workers           int
 		conns_total            int
@@ -119,13 +119,12 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		}
 
 		// CPULoad: .000408393
-		re = regexp.MustCompile("CPULoad: (\\d+)")
+		re = regexp.MustCompile("CPULoad: (\\d*.\\d+)")
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			//TODO
 			// cpu_load, _ = strconv.Atoi(matches[1])
-			cpu_load, _ = strconv.ParseFloat(matches[1], 64)
+			cpu_load = matches[1]
 			logp.Debug(selector, "CPULoad: %v", cpu_load)
 		}
 
@@ -139,29 +138,32 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		}
 
 		// ReqPerSec: .00499949
-		re = regexp.MustCompile("ReqPerSec: (\\d+)")
+		re = regexp.MustCompile("ReqPerSec: (\\d*.\\d+)")
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			req_per_sec, _ = strconv.Atoi(matches[1])
+			// req_per_sec, _ = strconv.Atoi(matches[1])
+			req_per_sec = matches[1]
 			logp.Debug(selector, "ReqPerSec: %v", req_per_sec)
 		}
 
 		// BytesPerSec: 4.1179
-		re = regexp.MustCompile("BytesPerSec: (\\d+)")
+		re = regexp.MustCompile("BytesPerSec: (\\d*.\\d+)")
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			bytes_per_sec, _ = strconv.Atoi(matches[1])
+			// bytes_per_sec, _ = strconv.Atoi(matches[1])
+			bytes_per_sec = matches[1]
 			logp.Debug(selector, "BytesPerSec: %v", bytes_per_sec)
 		}
 
 		// BytesPerReq: 823.665
-		re = regexp.MustCompile("BytesPerReq: (\\d+)")
+		re = regexp.MustCompile("BytesPerReq: (\\d*.\\d+)")
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			bytes_per_req, _ = strconv.Atoi(matches[1])
+			// bytes_per_req, _ = strconv.Atoi(matches[1])
+			bytes_per_req = matches[1]
 			logp.Debug(selector, "BytesPerReq: %v", bytes_per_req)
 		}
 

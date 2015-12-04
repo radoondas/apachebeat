@@ -1,11 +1,6 @@
 package main
 
 import (
-	//"errors"
-	//"math"
-	//"regexp"
-	//"strconv"
-	//"fmt"
 	"net/url"
 	"time"
 
@@ -27,9 +22,13 @@ type ApacheBeat struct {
 	done chan uint
 
 	urls []*url.URL
-	//format string
+
 	period time.Duration
 }
+
+// func New() *Apachebeat {
+// 	return &Apachebeat{}
+// }
 
 // Config ApacheBeat according to apachebeat.yml.
 func (ab *ApacheBeat) Config(b *beat.Beat) error {
