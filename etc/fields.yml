@@ -34,7 +34,7 @@ env:
         a sample rate of 1/10, the count is 10. The count is used by the
         UIs to return estimated values. Reserved for future usage.
       required: true
- 
+
     - name: beat.name
       description: >
         Name of the Beat sending the events. If the shipper name is set
@@ -49,13 +49,13 @@ env:
 apache_status:
   type: group
   description: >
-    Contains Apache HTTPD server-status statistics. 
+    Contains Apache HTTPD server-status statistics.
   fields:
     - name: total_access
       path: total_access
       type: int
       description: >
-        Total access since last restart of Apache HTTPD. 
+        Total access since last restart of Apache HTTPD.
 
     - name: total_kbytes
       path: total_kbytes.load5
@@ -67,13 +67,13 @@ apache_status:
       path: cpu_load
       type: float
       description: >
-        CPU load. 
+        CPU load.
 
     - name: uptime
       path: uptime
-      type: float
+      type: int
       description: >
-        Description. 
+        Description.
 
     - name: req_per_sec
       path: req_per_sec
