@@ -123,8 +123,11 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			// cpu_load, _ = strconv.Atoi(matches[1])
-			cpu_load = matches[1]
+			if strings.HasPrefix(matches[1], ".") {
+				cpu_load = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				cpu_load = matches[1]
+			}
 			logp.Debug(selector, "CPULoad: %v", cpu_load)
 		}
 
@@ -142,8 +145,11 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			// req_per_sec, _ = strconv.Atoi(matches[1])
-			req_per_sec = matches[1]
+			if strings.HasPrefix(matches[1], ".") {
+				req_per_sec = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				req_per_sec = matches[1]
+			}
 			logp.Debug(selector, "ReqPerSec: %v", req_per_sec)
 		}
 
@@ -152,8 +158,11 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			// bytes_per_sec, _ = strconv.Atoi(matches[1])
-			bytes_per_sec = matches[1]
+			if strings.HasPrefix(matches[1], ".") {
+				bytes_per_sec = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				bytes_per_sec = matches[1]
+			}
 			logp.Debug(selector, "BytesPerSec: %v", bytes_per_sec)
 		}
 
@@ -162,8 +171,11 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
-			// bytes_per_req, _ = strconv.Atoi(matches[1])
-			bytes_per_req = matches[1]
+			if strings.HasPrefix(matches[1], ".") {
+				bytes_per_req = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				bytes_per_req = matches[1]
+			}
 			logp.Debug(selector, "BytesPerReq: %v", bytes_per_req)
 		}
 
