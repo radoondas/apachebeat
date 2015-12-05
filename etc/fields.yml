@@ -51,146 +51,152 @@ apache_status:
   description: >
     Contains Apache HTTPD server-status statistics.
   fields:
-    - name: total_access
-      path: total_access
-      type: int
+    - name: apache
+      type: group
       description: >
-        Total access since last restart of Apache HTTPD.
+        Contains Apache HTTPD server-status statistics.
 
-    - name: total_kbytes
-      path: total_kbytes.load5
-      type: int
-      description: >
-        Total kbytes since last restart of Apache HTTPD.
+      fields:
+        - name: total_access
+          path: total_access
+          type: int
+          description: >
+            Total access since last restart of Apache HTTPD.
 
-    - name: cpu_load
-      path: cpu_load
-      type: float
-      description: >
-        CPU load.
+        - name: total_kbytes
+          path: total_kbytes.load5
+          type: int
+          description: >
+            Total kbytes since last restart of Apache HTTPD.
 
-    - name: uptime
-      path: uptime
-      type: int
-      description: >
-        Description.
+        - name: cpu_load
+          path: apache.cpu_load
+          type: float
+          description: >
+            CPU load.
 
-    - name: req_per_sec
-      path: req_per_sec
-      type: float
-      description: >
-        Description.
+        - name: uptime
+          path: uptime
+          type: int
+          description: >
+            Uptime of the Apache HTTPD server.
 
-    - name: bytes_per_sec
-      path: bytes_per_sec
-      type: float
-      description: >
-        Description.
+        - name: req_per_sec
+          path: apache.req_per_sec
+          type: float
+          description: >
+            Average rate of requests per second since last restart of Apache HTTPD server.
 
-    - name: bytes_per_req
-      path: bytes_per_req
-      type: float
-      description: >
-        Description.
+        - name: bytes_per_sec
+          path: apache.bytes_per_sec
+          type: float
+          description: >
+            Average rate of bytes per second since last restart of Apache HTTPD server.
 
-    - name: busy_workers
-      path: busy_workers
-      type: int
-      description: >
-        Description.
+        - name: bytes_per_req
+          path: apache.bytes_per_req
+          type: float
+          description: >
+            Average rate of bytes per request since last restart of Apache HTTPD server.
 
-    - name: idle_workers
-      path: idle_workers
-      type: intt
-      description: >
-        Description.
+        - name: busy_workers
+          path: busy_workers
+          type: int
+          description: >
+            The number of worker serving requests.
 
-    - name: conns_total
-      path: conns_total
-      type: int
-      description: >
-        Description.
+        - name: idle_workers
+          path: idle_workers
+          type: intt
+          description: >
+            The number of idle worker.
 
-    - name: conns_async_writing
-      path: conns_async_writing
-      type: int
-      description: >
-        Description.
+        - name: conns_total
+          path: conns_total
+          type: int
+          description: >
+            Total connections.
 
-    - name: conns_async_keep_alive
-      path: conns_async_keep_alive
-      type: int
-      description: >
-        Description.
+        - name: conns_async_writing
+          path: conns_async_writing
+          type: int
+          description: >
+            Total connections 'ConnsAsyncWriting'.
 
-    - name: conns_async_closing
-      path: conns_async_closing
-      type: int
-      description: >
-        Description.
+        - name: conns_async_keep_alive
+          path: conns_async_keep_alive
+          type: int
+          description: >
+            Total connections 'ConnsAsyncKeepAlive'.
 
-    - name: scb_starting_up
-      path: scb_starting_up
-      type: int
-      description: >
-        Description.
+        - name: conns_async_closing
+          path: conns_async_closing
+          type: int
+          description: >
+            Total connections 'ConnsAsyncClosing'.
 
-    - name: scb_reading_request
-      path: scb_reading_request
-      type: int
-      description: >
-        Description.
+        - name: scb_starting_up
+          path: scb_starting_up
+          type: int
+          description: >
+            Total workers 'Starting up'.
 
-    - name: scb_sending_reply
-      path: scb_sending_reply
-      type: int
-      description: >
-        Description.
+        - name: scb_reading_request
+          path: scb_reading_request
+          type: int
+          description: >
+            Total workers 'Reading Request'.
 
-    - name: scb_keepalive
-      path: scb_keepalive
-      type: int
-      description: >
-        Description.
+        - name: scb_sending_reply
+          path: scb_sending_reply
+          type: int
+          description: >
+            Total workers 'Sending Reply'.
 
-    - name: scb_dns_lookup
-      path: scb_dns_lookup
-      type: int
-      description: >
-        Description.
+        - name: scb_keepalive
+          path: scb_keepalive
+          type: int
+          description: >
+            Total workers 'Keepalive (read)'.
 
-    - name: scb_closing_connection
-      path: scb_closing_connection
-      type: int
-      description: >
-        Description.
+        - name: scb_dns_lookup
+          path: scb_dns_lookup
+          type: int
+          description: >
+            Total workers 'DNS Lookup'.
 
-    - name: scb_logging
-      path: scb_logging
-      type: int
-      description: >
-        Description.
+        - name: scb_closing_connection
+          path: scb_closing_connection
+          type: int
+          description: >
+            Total workers 'Closing connection'.
 
-    - name: scb_gracefully_finishing
-      path: scb_gracefully_finishing
-      type: int
-      description: >
-        Description.
+        - name: scb_logging
+          path: scb_logging
+          type: int
+          description: >
+            Total workers 'Logging'.
 
-    - name: scb_idle_cleanup
-      path: scb_idle_cleanup
-      type: int
-      description: >
-        Description.
+        - name: scb_gracefully_finishing
+          path: scb_gracefully_finishing
+          type: int
+          description: >
+            Total workers 'Gracefully finishing'.
 
-    - name: scb_open_slot
-      path: scb_open_slot
-      type: int
-      description: >
-        Description.
+        - name: scb_idle_cleanup
+          path: scb_idle_cleanup
+          type: int
+          description: >
+            Total workers 'Idle cleanup of worker'.
 
-    - name: scb_waiting_for_connection
-      path: scb_waiting_for_connection
-      type: int
-      description: >
-        Description.
+        - name: scb_open_slot
+          path: scb_open_slot
+          type: int
+          description: >
+            Total workers 'Open slot with no current process'.
+
+        - name: scb_waiting_for_connection
+          path: scb_waiting_for_connection
+          type: int
+          description: >
+            Total workers 'Waiting for Connection'.
