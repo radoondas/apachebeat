@@ -1,3 +1,5 @@
+[![Travis Build Status](https://travis-ci.org/elastic/libbeat.svg?branch=master)](https://travis-ci.org/radoondas/apachebeat)
+
 # ApacheBeat
 Current status: **DEVELOPMENT release**.
 Do not use in Production. ApacheBeat will be highly developed in the following days. :)
