@@ -5,4 +5,12 @@ go:
 
 sudo: false
 
-script: make test
+before_install:
+  # Redo the travis setup but with the radoondas/apachebeat path. This is needed so the package path is correct
+  - mkdir -p $HOME/gopath/src/github.com/radoondas/apachebeat
+  - rsync -az ${TRAVIS_BUILD_DIR}/ $HOME/gopath/src/github.com/radoondas/apachebeat/
+  - export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/radoondas/apachebeat
+  - cd $HOME/gopath/src/github.com/radoondas/apachebeat
+
+install:
+  - make
