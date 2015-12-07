@@ -11,7 +11,7 @@ before_install:
   - rsync -az ${TRAVIS_BUILD_DIR}/ $HOME/gopath/src/github.com/radoondas/apachebeat/
   - export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/radoondas/apachebeat
   - cd $HOME/gopath/src/github.com/radoondas/apachebeat
-  - go get github.com/elastic/beats/...
+  - go get github.com/elastic/beats/libbeat
 
 install:
   - make
