@@ -1,8 +1,7 @@
 [![Travis Build Status](https://travis-ci.org/elastic/libbeat.svg?branch=master)](https://travis-ci.org/radoondas/apachebeat)
 
 # ApacheBeat
-Current status: **DEVELOPMENT release**.
-Do not use in Production. ApacheBeat will be highly developed in the following days. :)
+Current status: **beta release**.
 
 ## Description
 This is beat for Apache HTTPD [server-status](https://httpd.apache.org/docs/2.4/mod/mod_status.html) page. ApacheBeat polls Apache HTTPD server-status page every 'defined' period. You can poll more URL's at once and save your results to ElasticSearch. Each document in ElasticSearch consists of metrics gathered from server-status page and add url.host to see which URL answered. Each document in ElasticSearch is flat document with no nested objects.
