@@ -60,5 +60,8 @@ More about beats platform: https://www.elastic.co/products/beats
 curl -XPUT 'http://localhost:9200/_template/apachebeat' -d@apachebeat.template.json
 ```
 
+## Example Kibana dashboard
+![Apache HTTPD server-status](/doc/images/apache-server-status.png)
+
 ## Thanks note
 Beat is highly motivated by [nginxbeat](https://github.com/mrkschan/nginxbeat). In fact nginxbeat served as a template. Thanks!!
