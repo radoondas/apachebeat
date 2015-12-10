@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "Type-apache_status",
+    "_type": "search",
+    "_source": {
+      "title": "Type apache_status",
+      "description": "Search for type apache_status objects",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\n  \"index\": \"apachebeat-*\",\n  \"query\": {\n    \"query_string\": {\n      \"query\": \"type:apache_status\",\n      \"analyze_wildcard\": true\n    }\n  },\n  \"filter\": [],\n  \"highlight\": {\n    \"pre_tags\": [\n      \"@kibana-highlighted-field@\"\n    ],\n    \"post_tags\": [\n      \"@/kibana-highlighted-field@\"\n    ],\n    \"fields\": {\n      \"*\": {}\n    },\n    \"require_field_match\": false,\n    \"fragment_size\": 2147483647\n  }\n}"
+      }
+    }
+  }
+]
