@@ -17,7 +17,7 @@ go get github.com/elastic/beats
 ```
 
 ## Elastic and Kibana
-Meanwhile setup your ElasticSearch and Kibana (example dashbords coming soon)
+Meanwhile setup your ElasticSearch and Kibana (example [dashbords](https://github.com/radoondas/apachebeat/tree/master/kibana))
 
 ## Build ApacheBeat 
 
