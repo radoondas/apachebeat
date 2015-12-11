@@ -65,7 +65,8 @@ curl -XPUT 'http://localhost:9200/_template/apachebeat' -d@apachebeat.template.j
 
 ## Links
 * [Simple Run guide](/RUN.md)
-* [Kibana samples](/KIBANA.md)
+* [Kibana guide](/KIBANA.md)
+* [Kibana samples](/kibana/dashboards)
 
 ## Thanks note
 Beat is highly motivated by [nginxbeat](https://github.com/mrkschan/nginxbeat). In fact nginxbeat served as a template. Thanks!!
