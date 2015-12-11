@@ -7,7 +7,7 @@ import (
 	"github.com/elastic/beats/libbeat/logp"
 )
 
-var Version = "1.0.0-dev1"
+var Version = "1.0.0-beta2"
 var Name = "apachebeat"
 
 func main() {
