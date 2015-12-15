@@ -15,13 +15,13 @@ wget https://github.com/elastic/beats-dashboards/blob/master/load.sh
 If you want to use HTTP authentication for Elasticsearch, you can specify the credentials as a second parameter:
 
 ```bash
-  ./load.sh -url http://localhost:9200 -user 'admin:password'
+./load.sh -url http://localhost:9200 -user 'admin:password'
 ```
 
 For more options:
 
 ```bash
-  ./load.sh -h
+./load.sh -h
 ```
 
 ## Examples
