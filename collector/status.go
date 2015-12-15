@@ -299,3 +299,4 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
     "scb_waiting_for_connection": tot_underscore,
   }, nil
 }
+
