@@ -12,6 +12,7 @@ before_install:
   - export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/radoondas/apachebeat
   - cd $HOME/gopath/src/github.com/radoondas/apachebeat
   - go get github.com/elastic/beats/libbeat
+  - go get github.com/stretchr/testify/assert
 
 install:
   - make
