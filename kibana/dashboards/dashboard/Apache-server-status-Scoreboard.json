@@ -1,0 +1,13 @@
+{
+  "title": "Apache server-status - Scoreboard",
+  "hits": 0,
+  "description": "",
+  "panelsJSON": "[{\"col\":1,\"id\":\"Scoreboard-with-openslots-line-chart\",\"panelIndex\":1,\"row\":1,\"size_x\":12,\"size_y\":7,\"type\":\"visualization\"}]",
+  "optionsJSON": "{\"darkTheme\":false}",
+  "uiStateJSON": "{}",
+  "version": 1,
+  "timeRestore": false,
+  "kibanaSavedObjectMeta": {
+    "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+  }
+}

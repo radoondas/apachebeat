@@ -1,0 +1,13 @@
+{
+  "title": "Apache server-status",
+  "hits": 0,
+  "description": "",
+  "panelsJSON": "[{\"col\":1,\"id\":\"Busy-Workers-area-chart\",\"panelIndex\":1,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"id\":\"Idle-Workers-area-chart\",\"type\":\"visualization\",\"panelIndex\":5,\"size_x\":6,\"size_y\":3,\"col\":1,\"row\":4},{\"id\":\"Busy-Workers-line-chart\",\"type\":\"visualization\",\"panelIndex\":6,\"size_x\":6,\"size_y\":3,\"col\":7,\"row\":1},{\"id\":\"Idle-Workers-line-chart\",\"type\":\"visualization\",\"panelIndex\":7,\"size_x\":6,\"size_y\":3,\"col\":7,\"row\":4},{\"id\":\"CPU-load-line-chart\",\"type\":\"visualization\",\"panelIndex\":8,\"size_x\":6,\"size_y\":2,\"col\":1,\"row\":7},{\"id\":\"Requests-per-second-line-chart\",\"type\":\"visualization\",\"panelIndex\":9,\"size_x\":6,\"size_y\":2,\"col\":7,\"row\":7}]",
+  "optionsJSON": "{\"darkTheme\":false}",
+  "uiStateJSON": "{}",
+  "version": 1,
+  "timeRestore": false,
+  "kibanaSavedObjectMeta": {
+    "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}]}"
+  }
+}

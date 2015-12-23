@@ -1,0 +1,18 @@
+{
+
+    "title": "Type apache_status",
+    "description": "Search for type apache_status objects",
+    "hits": 0,
+    "columns": [
+      "_source"
+    ],
+    "sort": [
+      "@timestamp",
+      "desc"
+    ],
+    "version": 1,
+    "kibanaSavedObjectMeta": {
+      "searchSourceJSON": "{\"index\":\"apachebeat-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"type:apache_status\"}},\"filter\":[],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647}}"
+    }
+
+}
