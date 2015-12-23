@@ -6,7 +6,7 @@ Add to your .bashrc important variables
 ```bash
 export GOROOT="$HOME/opt/go"
 export GOPATH="$HOME/workspace/go"
-export PATH="$HOME/opt/go/bin:"$PATH
+export PATH="$HOME/opt/go/bin:$PATH"
 ```
 
 ## Install apache beat and dependencies
@@ -19,11 +19,18 @@ go get github.com/elastic/beats
 ## Elastic and Kibana
 Meanwhile setup your ElasticSearch and Kibana (example [dashbords](https://github.com/radoondas/apachebeat/tree/master/kibana))
 
-## Build ApacheBeat 
+## Build ApacheBeat
 
 ```bash
 cd ~/workspace/go/src/github.com/radoondas/apachebeat
 go install
+```
+
+## Delete template (Optional)
+If you need for any reason to delete old template, use following method.
+
+```bash
+curl -XDELETE 'http://localhost:9200/_template/apachebeat'
 ```
 
 ## Import template
