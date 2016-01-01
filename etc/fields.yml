@@ -75,6 +75,30 @@ apache_status:
           description: >
             CPU load.
 
+        - name: cpu_user
+          path: apache.cpu_user
+          type: float
+          description: >
+            CPU User.
+
+        - name: cpu_system
+          path: apache.cpu_system
+          type: float
+          description: >
+            CPU System.
+
+        - name: cpu_children_user
+          path: apache.cpu_children_user
+          type: float
+          description: >
+            CPU children user.
+
+        - name: cpu_children_system
+          path: apache.cpu_children_system
+          type: float
+          description: >
+            CPU children system.
+
         - name: uptime
           path: uptime
           type: int
@@ -134,6 +158,30 @@ apache_status:
           type: int
           description: >
             Total connections 'ConnsAsyncClosing'.
+
+        - name: server_uptime_seconds
+          path: server_uptime_seconds
+          type: int
+          description: >
+            HTTPD Server uptime in seconds.
+
+        - name: load1
+          path: apache.load1
+          type: float
+          description: >
+            Load 1.
+
+        - name: load5
+          path: apache.load5
+          type: float
+          description: >
+            Load 5.
+
+        - name: load15
+          path: apache.load15
+          type: float
+          description: >
+            Load 15.
 
         - name: scb_starting_up
           path: scb_starting_up

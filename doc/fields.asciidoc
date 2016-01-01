@@ -93,6 +93,34 @@ type: float
 CPU load.
 
 
+==== apache.cpu_user
+
+type: float
+
+CPU User.
+
+
+==== apache.cpu_system
+
+type: float
+
+CPU System.
+
+
+==== apache.cpu_children_user
+
+type: float
+
+CPU children user.
+
+
+==== apache.cpu_children_system
+
+type: float
+
+CPU children system.
+
+
 ==== uptime
 
 type: int
@@ -161,6 +189,34 @@ Total connections 'ConnsAsyncKeepAlive'.
 type: int
 
 Total connections 'ConnsAsyncClosing'.
+
+
+==== server_uptime_seconds
+
+type: int
+
+HTTPD Server uptime in seconds.
+
+
+==== apache.load1
+
+type: float
+
+Load 1.
+
+
+==== apache.load5
+
+type: float
+
+Load 5.
+
+
+==== apache.load15
+
+type: float
+
+Load 15.
 
 
 ==== scb_starting_up

@@ -34,7 +34,35 @@
               "doc_values": "true",
               "type": "float"
             },
+            "cpu_children_system": {
+              "doc_values": "true",
+              "type": "float"
+            },
+            "cpu_children_user": {
+              "doc_values": "true",
+              "type": "float"
+            },
             "cpu_load": {
+              "doc_values": "true",
+              "type": "float"
+            },
+            "cpu_system": {
+              "doc_values": "true",
+              "type": "float"
+            },
+            "cpu_user": {
+              "doc_values": "true",
+              "type": "float"
+            },
+            "load1": {
+              "doc_values": "true",
+              "type": "float"
+            },
+            "load15": {
+              "doc_values": "true",
+              "type": "float"
+            },
+            "load5": {
               "doc_values": "true",
               "type": "float"
             },
