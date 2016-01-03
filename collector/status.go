@@ -1,423 +1,423 @@
 package collector
 
 import (
-  "bufio"
-  "fmt"
-  "net/http"
-  "net/url"
-  "regexp"
-  "strconv"
-  "strings"
+	"bufio"
+	"fmt"
+	"net/http"
+	"net/url"
+	"regexp"
+	"strconv"
+	"strings"
 
-  "github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/libbeat/logp"
 )
 
 const selector = "apachebeat"
 
 // StubCollector is a Collector that collects Apache HTTPD server-status page.
 type StubCollector struct {
-  requests int
+	requests int
 }
 
 // NewStubCollector constructs a new StubCollector.
 func NewStubCollector() Collector {
-  return &StubCollector{requests: 0}
+	return &StubCollector{requests: 0}
 }
 
 // Collect Apache HTTPD server-status from given url.
 func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
-  res, err := http.Get(u.String())
-  if err != nil {
-    return nil, err
-  }
-  defer res.Body.Close()
+	res, err := http.Get(u.String())
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
 
-  if res.StatusCode != 200 {
-    return nil, fmt.Errorf("HTTP%s", res.Status)
-  }
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("HTTP%s", res.Status)
+	}
 
-  // Apache status example:
-  // Total Accesses: 16147
-  // Total kBytes: 12988i
-  // CPULoad: .000408393
-  // Uptime: 3229728
-  // ReqPerSec: .00499949
-  // BytesPerSec: 4.1179
-  // BytesPerReq: 823.665
-  // BusyWorkers: 1
-  // IdleWorkers: 8
-  // ConnsTotal: 4940
-  // ConnsAsyncWriting: 527
-  // ConnsAsyncKeepAlive: 1321
-  // ConnsAsyncClosing: 2785
-  // ServerUptimeSeconds: 43
-  // Load1: 0.01
-  // Load5: 0.10
-  // Load15: 0.06
-  // CPUUser: 0
-  // CPUSystem: .01
-  // CPUChildrenUser: 0
-  // CPUChildrenSystem: 0
+	// Apache status example:
+	// Total Accesses: 16147
+	// Total kBytes: 12988i
+	// CPULoad: .000408393
+	// Uptime: 3229728
+	// ReqPerSec: .00499949
+	// BytesPerSec: 4.1179
+	// BytesPerReq: 823.665
+	// BusyWorkers: 1
+	// IdleWorkers: 8
+	// ConnsTotal: 4940
+	// ConnsAsyncWriting: 527
+	// ConnsAsyncKeepAlive: 1321
+	// ConnsAsyncClosing: 2785
+	// ServerUptimeSeconds: 43
+	// Load1: 0.01
+	// Load5: 0.10
+	// Load15: 0.06
+	// CPUUser: 0
+	// CPUSystem: .01
+	// CPUChildrenUser: 0
+	// CPUChildrenSystem: 0
 
-  var re *regexp.Regexp
-  scanner := bufio.NewScanner(res.Body)
+	var re *regexp.Regexp
+	scanner := bufio.NewScanner(res.Body)
 
-  // apachebeat - while we have something to read
-  // default values for type int is 0
-  var (
-    total_access int
-    total_kbytes int
-    cpu_load string
-    uptime int
-    req_per_sec string
-    bytes_per_sec string
-    bytes_per_req string
-    busy_workers int
-    idle_workers int
-    conns_total int
-    conns_async_writing int
-    conns_async_keep_alive int
-    conns_async_closing int
-    server_uptime_seconds int
-    load1 string
-    load5 string
-    load15 string
-    cpu_user string
-    cpu_system string
-    cpu_children_user string
-    cpu_children_system string
-  )
+	// apachebeat - while we have something to read
+	// default values for type int is 0
+	var (
+		total_access           int
+		total_kbytes           int
+		cpu_load               string
+		uptime                 int
+		req_per_sec            string
+		bytes_per_sec          string
+		bytes_per_req          string
+		busy_workers           int
+		idle_workers           int
+		conns_total            int
+		conns_async_writing    int
+		conns_async_keep_alive int
+		conns_async_closing    int
+		server_uptime_seconds  int
+		load1                  string
+		load5                  string
+		load15                 string
+		cpu_user               string
+		cpu_system             string
+		cpu_children_user      string
+		cpu_children_system    string
+	)
 
-  var (
-    hostname string
-  )
+	var (
+		hostname string
+	)
 
-  //set hostname from url
-  hostname = u.Host
-  logp.Debug(selector, "URL Hostname: %v", hostname)
+	//set hostname from url
+	hostname = u.Host
+	logp.Debug(selector, "URL Hostname: %v", hostname)
 
-  var (
-    tot_s int
-    tot_r int
-    tot_w int
-    tot_k int
-    tot_d int
-    tot_c int
-    tot_l int
-    tot_g int
-    tot_i int
-    tot_dot int
-    tot_underscore int
-  )
+	var (
+		tot_s          int
+		tot_r          int
+		tot_w          int
+		tot_k          int
+		tot_d          int
+		tot_c          int
+		tot_l          int
+		tot_g          int
+		tot_i          int
+		tot_dot        int
+		tot_underscore int
+	)
 
-  for scanner.Scan() {
-    // fmt.Println("read: ", scanner.Text())
-    logp.Debug(selector, "%v: Reading from body: %v", hostname, scanner.Text())
+	for scanner.Scan() {
+		// fmt.Println("read: ", scanner.Text())
+		logp.Debug(selector, "%v: Reading from body: %v", hostname, scanner.Text())
 
-    // Total Accesses: 16147
-    re = regexp.MustCompile("Total Accesses: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      total_access, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: Total Accesses: %v", hostname, total_access)
-    }
+		// Total Accesses: 16147
+		re = regexp.MustCompile("Total Accesses: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			total_access, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: Total Accesses: %v", hostname, total_access)
+		}
 
-    //Total kBytes: 12988
-    re = regexp.MustCompile("Total kBytes: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      total_kbytes, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: Total kBytes: %v", hostname, total_kbytes)
-    }
+		//Total kBytes: 12988
+		re = regexp.MustCompile("Total kBytes: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			total_kbytes, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: Total kBytes: %v", hostname, total_kbytes)
+		}
 
-    // CPULoad: .000408393
-    re = regexp.MustCompile("CPULoad: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        cpu_load = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        cpu_load = matches[1]
-      }
-      logp.Debug(selector, "%v: CPULoad: %v", hostname, cpu_load)
-    }
+		// CPULoad: .000408393
+		re = regexp.MustCompile("CPULoad: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				cpu_load = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				cpu_load = matches[1]
+			}
+			logp.Debug(selector, "%v: CPULoad: %v", hostname, cpu_load)
+		}
 
-    // CPUUser: 0
-    re = regexp.MustCompile("CPUUser: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        cpu_user = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        cpu_user = matches[1]
-      }
-      logp.Debug(selector, "%v: CPUUser: %v", hostname, cpu_user)
-    }
+		// CPUUser: 0
+		re = regexp.MustCompile("CPUUser: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				cpu_user = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				cpu_user = matches[1]
+			}
+			logp.Debug(selector, "%v: CPUUser: %v", hostname, cpu_user)
+		}
 
-    // CPUSystem: .01
-    re = regexp.MustCompile("CPUSystem: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        cpu_system = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        cpu_system = matches[1]
-      }
-      logp.Debug(selector, "%v: CPUSystem: %v", hostname, cpu_system)
-    }
+		// CPUSystem: .01
+		re = regexp.MustCompile("CPUSystem: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				cpu_system = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				cpu_system = matches[1]
+			}
+			logp.Debug(selector, "%v: CPUSystem: %v", hostname, cpu_system)
+		}
 
-    // CPUChildrenUser: 0
-    re = regexp.MustCompile("CPUChildrenUser: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        cpu_children_user = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        cpu_children_user = matches[1]
-      }
-      logp.Debug(selector, "%v: CPUChildrenUser: %v", hostname, cpu_children_user)
-    }
+		// CPUChildrenUser: 0
+		re = regexp.MustCompile("CPUChildrenUser: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				cpu_children_user = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				cpu_children_user = matches[1]
+			}
+			logp.Debug(selector, "%v: CPUChildrenUser: %v", hostname, cpu_children_user)
+		}
 
-    // CPUChildrenSystem: 0
-    re = regexp.MustCompile("CPUChildrenSystem: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        cpu_children_system = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        cpu_children_system = matches[1]
-      }
-      logp.Debug(selector, "%v: CPUChildrenSystem: %v", hostname, cpu_children_system)
-    }
+		// CPUChildrenSystem: 0
+		re = regexp.MustCompile("CPUChildrenSystem: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				cpu_children_system = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				cpu_children_system = matches[1]
+			}
+			logp.Debug(selector, "%v: CPUChildrenSystem: %v", hostname, cpu_children_system)
+		}
 
-    // Uptime: 3229728
-    re = regexp.MustCompile("Uptime: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      uptime, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: Uptime: %v", hostname, uptime)
-    }
+		// Uptime: 3229728
+		re = regexp.MustCompile("Uptime: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			uptime, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: Uptime: %v", hostname, uptime)
+		}
 
-    // ReqPerSec: .00499949
-    re = regexp.MustCompile("ReqPerSec: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        req_per_sec = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        req_per_sec = matches[1]
-      }
-      logp.Debug(selector, "%v: ReqPerSec: %v", hostname, req_per_sec)
-    }
+		// ReqPerSec: .00499949
+		re = regexp.MustCompile("ReqPerSec: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				req_per_sec = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				req_per_sec = matches[1]
+			}
+			logp.Debug(selector, "%v: ReqPerSec: %v", hostname, req_per_sec)
+		}
 
-    // BytesPerSec: 4.1179
-    re = regexp.MustCompile("BytesPerSec: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        bytes_per_sec = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        bytes_per_sec = matches[1]
-      }
-      logp.Debug(selector, "%v: BytesPerSec: %v", hostname, bytes_per_sec)
-    }
+		// BytesPerSec: 4.1179
+		re = regexp.MustCompile("BytesPerSec: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				bytes_per_sec = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				bytes_per_sec = matches[1]
+			}
+			logp.Debug(selector, "%v: BytesPerSec: %v", hostname, bytes_per_sec)
+		}
 
-    // BytesPerReq: 823.665
-    re = regexp.MustCompile("BytesPerReq: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        bytes_per_req = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        bytes_per_req = matches[1]
-      }
-      logp.Debug(selector, "%v: BytesPerReq: %v", hostname, bytes_per_req)
-    }
+		// BytesPerReq: 823.665
+		re = regexp.MustCompile("BytesPerReq: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				bytes_per_req = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				bytes_per_req = matches[1]
+			}
+			logp.Debug(selector, "%v: BytesPerReq: %v", hostname, bytes_per_req)
+		}
 
-    // BusyWorkers: 1
-    re = regexp.MustCompile("BusyWorkers: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      busy_workers, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: BusyWorkers: %v", hostname, busy_workers)
-    }
+		// BusyWorkers: 1
+		re = regexp.MustCompile("BusyWorkers: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			busy_workers, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: BusyWorkers: %v", hostname, busy_workers)
+		}
 
-    // IdleWorkers: 8
-    re = regexp.MustCompile("IdleWorkers: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      idle_workers, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: IdleWorkers: %v", hostname, idle_workers)
-    }
+		// IdleWorkers: 8
+		re = regexp.MustCompile("IdleWorkers: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			idle_workers, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: IdleWorkers: %v", hostname, idle_workers)
+		}
 
-    // ConnsTotal: 4940
-    re = regexp.MustCompile("ConnsTotal: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      conns_total, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: ConnsTotal: %v", hostname, conns_total)
-    }
+		// ConnsTotal: 4940
+		re = regexp.MustCompile("ConnsTotal: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			conns_total, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: ConnsTotal: %v", hostname, conns_total)
+		}
 
-    // ConnsAsyncWriting: 527
-    re = regexp.MustCompile("ConnsAsyncWriting: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      conns_async_writing, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: ConnsAsyncWriting: %v", hostname, conns_async_writing)
-    }
+		// ConnsAsyncWriting: 527
+		re = regexp.MustCompile("ConnsAsyncWriting: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			conns_async_writing, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: ConnsAsyncWriting: %v", hostname, conns_async_writing)
+		}
 
-    // ConnsAsyncKeepAlive: 1321
-    re = regexp.MustCompile("ConnsAsyncKeepAlive: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      conns_async_keep_alive, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: ConnsAsyncKeepAlive: %v", hostname, conns_async_keep_alive)
-    }
+		// ConnsAsyncKeepAlive: 1321
+		re = regexp.MustCompile("ConnsAsyncKeepAlive: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			conns_async_keep_alive, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: ConnsAsyncKeepAlive: %v", hostname, conns_async_keep_alive)
+		}
 
-    // ConnsAsyncClosing: 2785
-    re = regexp.MustCompile("ConnsAsyncClosing: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      conns_async_closing, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: ConnsAsyncClosing: %v", hostname, conns_async_closing)
-    }
+		// ConnsAsyncClosing: 2785
+		re = regexp.MustCompile("ConnsAsyncClosing: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			conns_async_closing, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: ConnsAsyncClosing: %v", hostname, conns_async_closing)
+		}
 
-    // ServerUptimeSeconds: 43
-    re = regexp.MustCompile("ServerUptimeSeconds: (\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      server_uptime_seconds, _ = strconv.Atoi(matches[1])
-      logp.Debug(selector, "%v: ServerUptimeSeconds: %v", hostname, server_uptime_seconds)
-    }
+		// ServerUptimeSeconds: 43
+		re = regexp.MustCompile("ServerUptimeSeconds: (\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			server_uptime_seconds, _ = strconv.Atoi(matches[1])
+			logp.Debug(selector, "%v: ServerUptimeSeconds: %v", hostname, server_uptime_seconds)
+		}
 
-    //Load1: 0.01
-    re = regexp.MustCompile("Load1: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        load1 = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        load1 = matches[1]
-      }
-      logp.Debug(selector, "%v: Load1: %v", hostname, load1)
-    }
+		//Load1: 0.01
+		re = regexp.MustCompile("Load1: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				load1 = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				load1 = matches[1]
+			}
+			logp.Debug(selector, "%v: Load1: %v", hostname, load1)
+		}
 
-    //Load5: 0.10
-    re = regexp.MustCompile("Load5: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        load5 = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        load5 = matches[1]
-      }
-      logp.Debug(selector, "%v: Load5: %v", hostname, load5)
-    }
+		//Load5: 0.10
+		re = regexp.MustCompile("Load5: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				load5 = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				load5 = matches[1]
+			}
+			logp.Debug(selector, "%v: Load5: %v", hostname, load5)
+		}
 
-    //Load15: 0.06
-    re = regexp.MustCompile("Load15: (\\d*.*\\d+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      if strings.HasPrefix(matches[1], ".") {
-        load15 = strings.Replace(matches[1], ".", "0.", 1)
-      } else {
-        load15 = matches[1]
-      }
-      logp.Debug(selector, "%v: Load15: %v", hostname, load15)
-    }
+		//Load15: 0.06
+		re = regexp.MustCompile("Load15: (\\d*.*\\d+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			if strings.HasPrefix(matches[1], ".") {
+				load15 = strings.Replace(matches[1], ".", "0.", 1)
+			} else {
+				load15 = matches[1]
+			}
+			logp.Debug(selector, "%v: Load15: %v", hostname, load15)
+		}
 
-    // Scoreboard Key:
-    // "_" Waiting for Connection, "S" Starting up, "R" Reading Request,
-    // "W" Sending Reply, "K" Keepalive (read), "D" DNS Lookup,
-    // "C" Closing connection, "L" Logging, "G" Gracefully finishing,
-    // "I" Idle cleanup of worker, "." Open slot with no current process
-    // Scoreboard: _W____........___...............................................................................................................................................................................................................................................
-    re = regexp.MustCompile("Scoreboard: (\\w+)")
-    if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-      //
-    } else {
-      scr := strings.Split(scanner.Text(), " ")
+		// Scoreboard Key:
+		// "_" Waiting for Connection, "S" Starting up, "R" Reading Request,
+		// "W" Sending Reply, "K" Keepalive (read), "D" DNS Lookup,
+		// "C" Closing connection, "L" Logging, "G" Gracefully finishing,
+		// "I" Idle cleanup of worker, "." Open slot with no current process
+		// Scoreboard: _W____........___...............................................................................................................................................................................................................................................
+		re = regexp.MustCompile("Scoreboard: (\\w+)")
+		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
+			//
+		} else {
+			scr := strings.Split(scanner.Text(), " ")
 
-      tot_underscore = strings.Count(scr[1], "_")
-      tot_s = strings.Count(scr[1], "S")
-      tot_r = strings.Count(scr[1], "R")
-      tot_w = strings.Count(scr[1], "W")
-      tot_k = strings.Count(scr[1], "K")
-      tot_d = strings.Count(scr[1], "D")
-      tot_c = strings.Count(scr[1], "C")
-      tot_l = strings.Count(scr[1], "L")
-      tot_g = strings.Count(scr[1], "G")
-      tot_i = strings.Count(scr[1], "I")
-      tot_dot = strings.Count(scr[1], ".")
+			tot_underscore = strings.Count(scr[1], "_")
+			tot_s = strings.Count(scr[1], "S")
+			tot_r = strings.Count(scr[1], "R")
+			tot_w = strings.Count(scr[1], "W")
+			tot_k = strings.Count(scr[1], "K")
+			tot_d = strings.Count(scr[1], "D")
+			tot_c = strings.Count(scr[1], "C")
+			tot_l = strings.Count(scr[1], "L")
+			tot_g = strings.Count(scr[1], "G")
+			tot_i = strings.Count(scr[1], "I")
+			tot_dot = strings.Count(scr[1], ".")
 
-      logp.Debug(selector, "%v: Waiting for Connection (_): %v", hostname, tot_underscore)
-      logp.Debug(selector, "%v: Starting up (S): %v", hostname, tot_s)
-      logp.Debug(selector, "%v: Reading Request (R): %v", hostname, tot_r)
-      logp.Debug(selector, "%v: Sending Reply (W): %v", hostname, tot_w)
-      logp.Debug(selector, "%v: Keepalive (read) (K): %v", hostname, tot_k)
-      logp.Debug(selector, "%v: DNS Lookup (D): %v", hostname, tot_d)
-      logp.Debug(selector, "%v: Closing connection (C): %v", hostname, tot_c)
-      logp.Debug(selector, "%v: Logging (L): %v", hostname, tot_l)
-      logp.Debug(selector, "%v: Gracefully finishing (G): %v", hostname, tot_g)
-      logp.Debug(selector, "%v: Idle cleanup of worker (I): %v", hostname, tot_i)
-      logp.Debug(selector, "%v: Open slot with no current process (.): %v", hostname, tot_dot)
-    }
-  }
+			logp.Debug(selector, "%v: Waiting for Connection (_): %v", hostname, tot_underscore)
+			logp.Debug(selector, "%v: Starting up (S): %v", hostname, tot_s)
+			logp.Debug(selector, "%v: Reading Request (R): %v", hostname, tot_r)
+			logp.Debug(selector, "%v: Sending Reply (W): %v", hostname, tot_w)
+			logp.Debug(selector, "%v: Keepalive (read) (K): %v", hostname, tot_k)
+			logp.Debug(selector, "%v: DNS Lookup (D): %v", hostname, tot_d)
+			logp.Debug(selector, "%v: Closing connection (C): %v", hostname, tot_c)
+			logp.Debug(selector, "%v: Logging (L): %v", hostname, tot_l)
+			logp.Debug(selector, "%v: Gracefully finishing (G): %v", hostname, tot_g)
+			logp.Debug(selector, "%v: Idle cleanup of worker (I): %v", hostname, tot_i)
+			logp.Debug(selector, "%v: Open slot with no current process (.): %v", hostname, tot_dot)
+		}
+	}
 
-  return map[string]interface{}{
-    "total_access":               total_access,
-    "total_kbytes":               total_kbytes,
-    "cpu_load":                   cpu_load,
-    "uptime":                     uptime,
-    "req_per_sec":                req_per_sec,
-    "bytes_per_sec":              bytes_per_sec,
-    "bytes_per_req":              bytes_per_req,
-    "busy_workers":               busy_workers,
-    "idle_workers":               idle_workers,
-    "conns_total":                conns_total,
-    "conns_async_writing":        conns_async_writing,
-    "conns_async_keep_alive":     conns_async_keep_alive,
-    "conns_async_closing":        conns_async_closing,
-    "server_uptime_seconds":      server_uptime_seconds,
-    "load1":                      load1,
-    "load5":                      load5,
-    "load15":                     load15,
-    "host_url":                   hostname,
-    "scb_starting_up":            tot_s,
-    "scb_reading_request":        tot_r,
-    "scb_sending_reply":          tot_w,
-    "scb_keepalive":              tot_k,
-    "scb_dns_lookup":             tot_d,
-    "scb_closing_connection":     tot_c,
-    "scb_logging":                tot_l,
-    "scb_gracefully_finishing":   tot_g,
-    "scb_idle_cleanup":           tot_i,
-    "scb_open_slot":              tot_dot,
-    "scb_waiting_for_connection": tot_underscore,
-    "cpu_user": cpu_user,
-    "cpu_system": cpu_system,
-    "cpu_children_user": cpu_children_user,
-    "cpu_children_system": cpu_children_system,
-  }, nil
+	return map[string]interface{}{
+		"total_access":               total_access,
+		"total_kbytes":               total_kbytes,
+		"cpu_load":                   cpu_load,
+		"uptime":                     uptime,
+		"req_per_sec":                req_per_sec,
+		"bytes_per_sec":              bytes_per_sec,
+		"bytes_per_req":              bytes_per_req,
+		"busy_workers":               busy_workers,
+		"idle_workers":               idle_workers,
+		"conns_total":                conns_total,
+		"conns_async_writing":        conns_async_writing,
+		"conns_async_keep_alive":     conns_async_keep_alive,
+		"conns_async_closing":        conns_async_closing,
+		"server_uptime_seconds":      server_uptime_seconds,
+		"load1":                      load1,
+		"load5":                      load5,
+		"load15":                     load15,
+		"host_url":                   hostname,
+		"scb_starting_up":            tot_s,
+		"scb_reading_request":        tot_r,
+		"scb_sending_reply":          tot_w,
+		"scb_keepalive":              tot_k,
+		"scb_dns_lookup":             tot_d,
+		"scb_closing_connection":     tot_c,
+		"scb_logging":                tot_l,
+		"scb_gracefully_finishing":   tot_g,
+		"scb_idle_cleanup":           tot_i,
+		"scb_open_slot":              tot_dot,
+		"scb_waiting_for_connection": tot_underscore,
+		"cpu_user":                   cpu_user,
+		"cpu_system":                 cpu_system,
+		"cpu_children_user":          cpu_children_user,
+		"cpu_children_system":        cpu_children_system,
+	}, nil
 }
