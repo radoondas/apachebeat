@@ -108,6 +108,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		tot_i          int
 		tot_dot        int
 		tot_underscore int
+		tot_total      int
 	)
 
 	for scanner.Scan() {
@@ -370,6 +371,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 			tot_g = strings.Count(scr[1], "G")
 			tot_i = strings.Count(scr[1], "I")
 			tot_dot = strings.Count(scr[1], ".")
+			tot_total = tot_underscore + tot_s + tot_r + tot_w + tot_k + tot_d + tot_c + tot_l + tot_g + tot_i + tot_dot
 
 			logp.Debug(selector, "%v: Waiting for Connection (_): %v", hostname, tot_underscore)
 			logp.Debug(selector, "%v: Starting up (S): %v", hostname, tot_s)
@@ -415,6 +417,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		"scb_idle_cleanup":           tot_i,
 		"scb_open_slot":              tot_dot,
 		"scb_waiting_for_connection": tot_underscore,
+		"scb_total":                  tot_total,
 		"cpu_user":                   cpu_user,
 		"cpu_system":                 cpu_system,
 		"cpu_children_user":          cpu_children_user,

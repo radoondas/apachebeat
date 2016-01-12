@@ -248,3 +248,9 @@ apache_status:
           type: int
           description: >
             Total workers 'Waiting for Connection'.
+
+        - name: scb_total
+          path: scb_total
+          type: int
+          description: >
+            Total workers.

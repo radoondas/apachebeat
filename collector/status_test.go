@@ -98,6 +98,7 @@ func TestStubCollector(t *testing.T) {
 	assert.Equal(t, s1["scb_idle_cleanup"], 0)
 	assert.Equal(t, s1["scb_open_slot"], 247)
 	assert.Equal(t, s1["scb_waiting_for_connection"], 8)
+	assert.Equal(t, s1["scb_total"], 256)
 
 	//  BusyWorkers: 1
 	//  IdleWorkers: 4
@@ -139,6 +140,7 @@ func TestStubCollector(t *testing.T) {
 	assert.Equal(t, s2["scb_idle_cleanup"], 0)
 	assert.Equal(t, s2["scb_open_slot"], 251)
 	assert.Equal(t, s2["scb_waiting_for_connection"], 4)
+	assert.Equal(t, s2["scb_total"], 256)
 
 	//  Total Accesses: 491803362
 	//  Total kBytes: 21453176370
@@ -202,7 +204,7 @@ func TestStubCollector(t *testing.T) {
 	assert.Equal(t, s3["bytes_per_req"], "44668.4")
 	assert.Equal(t, s3["busy_workers"], 1298)
 	assert.Equal(t, s3["idle_workers"], 652)
-	assert.Equal(t, s3["c5onns_total"], 3264)
+	assert.Equal(t, s3["conns_total"], 3264)
 	assert.Equal(t, s3["conns_async_writing"], 82)
 	assert.Equal(t, s3["conns_async_keep_alive"], 1574)
 	assert.Equal(t, s3["conns_async_closing"], 309)
@@ -226,4 +228,5 @@ func TestStubCollector(t *testing.T) {
 	assert.Equal(t, s3["scb_idle_cleanup"], 0)
 	assert.Equal(t, s3["scb_open_slot"], 1800)
 	assert.Equal(t, s3["scb_waiting_for_connection"], 652)
+	assert.Equal(t, s3["scb_total"], 3750)
 }
