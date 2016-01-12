@@ -131,7 +131,7 @@ apache_status:
 
         - name: idle_workers
           path: idle_workers
-          type: intt
+          type: int
           description: >
             The number of idle worker.
 
