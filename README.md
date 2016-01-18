@@ -1,4 +1,4 @@
-[![Travis Build Status](https://travis-ci.org/elastic/libbeat.svg?branch=master)](https://travis-ci.org/radoondas/apachebeat)
+[![Travis Build Status](https://travis-ci.org/radoondas/apachebeat.svg?branch=master)](https://travis-ci.org/radoondas/apachebeat)
 
 # ApacheBeat
 Current status: **beta release**.
