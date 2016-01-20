@@ -9,7 +9,7 @@ export GOPATH="$HOME/workspace/go"
 export PATH="$HOME/opt/go/bin:$PATH"
 ```
 
-## Install apache beat and dependencies
+## Install ApacheBeat and dependencies
 
 ```bash
 go get github.com/radoondas/apachebeat
