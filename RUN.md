@@ -12,8 +12,8 @@ export PATH="$HOME/opt/go/bin:$PATH"
 ## Install ApacheBeat and dependencies
 
 ```bash
+go get -insecure gopkg.in/yaml.v2
 go get github.com/radoondas/apachebeat
-go get github.com/elastic/beats
 ```
 
 ## Elastic and Kibana
