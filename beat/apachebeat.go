@@ -1,4 +1,4 @@
-package main
+package beat
 
 import (
 	"net/url"
@@ -26,9 +26,9 @@ type ApacheBeat struct {
 	period time.Duration
 }
 
-// func New() *Apachebeat {
-// 	return &Apachebeat{}
-// }
+func New() *ApacheBeat {
+	return &ApacheBeat{}
+}
 
 // Config ApacheBeat according to apachebeat.yml.
 func (ab *ApacheBeat) Config(b *beat.Beat) error {

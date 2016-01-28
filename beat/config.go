@@ -1,4 +1,4 @@
-package main
+package beat
 
 type ApacheConfig struct {
 	// URLs to Apache status page.
