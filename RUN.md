@@ -44,11 +44,11 @@ curl -XPUT 'http://localhost:9200/_template/apachebeat' -d@apachebeat.template.j
 Following command will execute ApacheBeat with debug option and will not index results in to ES. Instead, you will see output on the screen.
 ```bash
 cd ~/workspace/go/bin
-./apachebeat  -e -v -d apachebeat -c ~/workspace/go/src/github.com/radoondas/apachebeat/etc/apachebeat.yml
+./apachebeat  -e -v -d apachebeat -c ~/workspace/go/src/github.com/radoondas/apachebeat/apachebeat.yml
 ```
 
 With no debug options - just do straight indexing to your ES installation
 
 ```bash
-./apachebeat  -e -c ~/workspace/go/src/github.com/radoondas/apachebeat/etc/apachebeat.yml
+./apachebeat  -e -c ~/workspace/go/src/github.com/radoondas/apachebeat/apachebeat.yml
 ```
