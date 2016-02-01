@@ -1,4 +1,4 @@
-package beat
+package beater
 
 import (
 	"net/url"
@@ -19,7 +19,7 @@ type ApacheBeat struct {
 	// ApConfig holds configurations of Apachebeat parsed by libbeat.
 	AbConfig ConfigSettings
 
-	done chan uint
+	done chan struct{}
 
 	urls []*url.URL
 
@@ -27,7 +27,9 @@ type ApacheBeat struct {
 }
 
 func New() *ApacheBeat {
-	return &ApacheBeat{}
+	return &ApacheBeat{
+		done: make(chan struct{}),
+	}
 }
 
 // Config ApacheBeat according to apachebeat.yml.
@@ -72,7 +74,7 @@ func (ab *ApacheBeat) Config(b *beat.Beat) error {
 
 // Setup ApacheBeat.
 func (ab *ApacheBeat) Setup(b *beat.Beat) error {
-	ab.done = make(chan uint)
+	ab.done = make(chan struct{})
 
 	return nil
 }
