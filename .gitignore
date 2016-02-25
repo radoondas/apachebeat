@@ -12,12 +12,16 @@ _test
 *.prof
 
 # Golang 1.5+ vendor folder
-vendor/
+#vendor/
 
 # build
 apachebeat
-/.project
 
 # IntelliJ IDEA
 .idea/
+.project
 apachebeat.iml
+
+# Gemfiles
+Gemfile.lock
+Gemfile
