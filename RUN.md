@@ -39,7 +39,7 @@ curl -XDELETE 'http://localhost:9200/_template/apachebeat'
 
 ## Import template
 ```bash
-cd ~/workspace/go/src/github.com/radoondas/apachebeat/etc
+cd $GOPATH/src/github.com/radoondas/apachebeat/etc
 curl -XPUT 'http://localhost:9200/_template/apachebeat' -d@apachebeat.template.json
 ```
 
