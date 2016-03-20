@@ -117,27 +117,21 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// Total Accesses: 16147
 		re = regexp.MustCompile("Total Accesses: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			total_access, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: Total Accesses: %v", hostname, total_access)
 		}
 
 		//Total kBytes: 12988
 		re = regexp.MustCompile("Total kBytes: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			total_kbytes, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: Total kBytes: %v", hostname, total_kbytes)
 		}
 
 		// CPULoad: .000408393
 		re = regexp.MustCompile("CPULoad: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				cpu_load = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -148,9 +142,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// CPUUser: 0
 		re = regexp.MustCompile("CPUUser: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				cpu_user = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -161,9 +153,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// CPUSystem: .01
 		re = regexp.MustCompile("CPUSystem: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				cpu_system = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -174,9 +164,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// CPUChildrenUser: 0
 		re = regexp.MustCompile("CPUChildrenUser: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				cpu_children_user = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -187,9 +175,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// CPUChildrenSystem: 0
 		re = regexp.MustCompile("CPUChildrenSystem: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				cpu_children_system = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -200,18 +186,14 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// Uptime: 3229728
 		re = regexp.MustCompile("Uptime: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			uptime, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: Uptime: %v", hostname, uptime)
 		}
 
 		// ReqPerSec: .00499949
 		re = regexp.MustCompile("ReqPerSec: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				req_per_sec = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -222,9 +204,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// BytesPerSec: 4.1179
 		re = regexp.MustCompile("BytesPerSec: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				bytes_per_sec = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -235,9 +215,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// BytesPerReq: 823.665
 		re = regexp.MustCompile("BytesPerReq: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				bytes_per_req = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -248,72 +226,56 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		// BusyWorkers: 1
 		re = regexp.MustCompile("BusyWorkers: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			busy_workers, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: BusyWorkers: %v", hostname, busy_workers)
 		}
 
 		// IdleWorkers: 8
 		re = regexp.MustCompile("IdleWorkers: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			idle_workers, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: IdleWorkers: %v", hostname, idle_workers)
 		}
 
 		// ConnsTotal: 4940
 		re = regexp.MustCompile("ConnsTotal: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			conns_total, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: ConnsTotal: %v", hostname, conns_total)
 		}
 
 		// ConnsAsyncWriting: 527
 		re = regexp.MustCompile("ConnsAsyncWriting: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			conns_async_writing, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: ConnsAsyncWriting: %v", hostname, conns_async_writing)
 		}
 
 		// ConnsAsyncKeepAlive: 1321
 		re = regexp.MustCompile("ConnsAsyncKeepAlive: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			conns_async_keep_alive, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: ConnsAsyncKeepAlive: %v", hostname, conns_async_keep_alive)
 		}
 
 		// ConnsAsyncClosing: 2785
 		re = regexp.MustCompile("ConnsAsyncClosing: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			conns_async_closing, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: ConnsAsyncClosing: %v", hostname, conns_async_closing)
 		}
 
 		// ServerUptimeSeconds: 43
 		re = regexp.MustCompile("ServerUptimeSeconds: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			server_uptime_seconds, _ = strconv.Atoi(matches[1])
 			logp.Debug(selector, "%v: ServerUptimeSeconds: %v", hostname, server_uptime_seconds)
 		}
 
 		//Load1: 0.01
 		re = regexp.MustCompile("Load1: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				load1 = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -324,9 +286,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		//Load5: 0.10
 		re = regexp.MustCompile("Load5: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				load5 = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -337,9 +297,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 
 		//Load15: 0.06
 		re = regexp.MustCompile("Load15: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			if strings.HasPrefix(matches[1], ".") {
 				load15 = strings.Replace(matches[1], ".", "0.", 1)
 			} else {
@@ -355,9 +313,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		// "I" Idle cleanup of worker, "." Open slot with no current process
 		// Scoreboard: _W____........___...............................................................................................................................................................................................................................................
 		re = regexp.MustCompile("Scoreboard: (_|S|R|W|K|D|C|L|G|I|\\.)+")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
-			//
-		} else {
+		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
 			scr := strings.Split(scanner.Text(), " ")
 
 			tot_underscore = strings.Count(scr[1], "_")
