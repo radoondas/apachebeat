@@ -354,7 +354,7 @@ func (c *StubCollector) Collect(u url.URL) (map[string]interface{}, error) {
 		// "C" Closing connection, "L" Logging, "G" Gracefully finishing,
 		// "I" Idle cleanup of worker, "." Open slot with no current process
 		// Scoreboard: _W____........___...............................................................................................................................................................................................................................................
-		re = regexp.MustCompile("Scoreboard: (\\w+)")
+		re = regexp.MustCompile("Scoreboard: (_|S|R|W|K|D|C|L|G|I|\\.)+")
 		if matches := re.FindStringSubmatch(scanner.Text()); matches == nil {
 			//
 		} else {
