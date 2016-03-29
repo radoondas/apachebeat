@@ -6,9 +6,8 @@ This file is generated! See etc/fields.yml and scripts/generate_field_docs.py
 [[exported-fields]]
 == Exported Fields
 
-This document describes the fields that are exported by
-ApacheBeat. They are grouped in the
-following categories:
+This document describes the fields that are exported by Apachebeat. They are
+grouped in the following categories:
 
 * <<exported-fields-env>>
 * <<exported-fields-apache_status>>
@@ -40,13 +39,11 @@ required: True
 Set to "apache-status" to indicate that the statistics are Apache HTTPD server-status.
 
 
-==== count
-
-type: int
+==== url
 
 required: True
 
-The number of transactions that this event represents. This is generally the inverse of the sampling rate. For example, for a sample rate of 1/10, the count is 10. The count is used by the UIs to return estimated values. Reserved for future usage.
+Remote Apache HTTPD server-status URL.
 
 
 ==== beat.name
@@ -72,227 +69,234 @@ Contains Apache HTTPD server-status statistics.
 
 
 
-==== total_access
+==== totalAccesses
 
-type: int
+type: integer
 
 Total access since last restart of Apache HTTPD.
 
 
-==== total_kbytes.load5
+==== totalKBytes
 
-type: int
+type: integer
 
 Total kbytes since last restart of Apache HTTPD.
 
 
-==== apache.cpu_load
+==== apache.cpu.cpuLoad
 
 type: float
 
 CPU load.
 
 
-==== apache.cpu_user
+==== apache.cpu.cpuUser
 
 type: float
 
 CPU User.
 
 
-==== apache.cpu_system
+==== apache.cpu.cpuSystem
 
 type: float
 
 CPU System.
 
 
-==== apache.cpu_children_user
+==== apache.cpu.cpuChildrenUser
 
 type: float
 
 CPU children user.
 
 
-==== apache.cpu_children_system
+==== apache.cpu.cpuChildrenSystem
 
 type: float
 
 CPU children system.
 
 
-==== uptime
+==== apache.uptime.uptime
 
-type: int
+type: integer
 
 Uptime of the Apache HTTPD server.
 
 
-==== apache.req_per_sec
+==== apache.uptime.serverUptimeSeconds
+
+type: integer
+
+HTTPD Server uptime in seconds.
+
+
+==== apache.reqPerSec
 
 type: float
 
 Average rate of requests per second since last restart of Apache HTTPD server.
 
 
-==== apache.bytes_per_sec
+==== apache.bytesPerSec
 
 type: float
 
 Average rate of bytes per second since last restart of Apache HTTPD server.
 
 
-==== apache.bytes_per_req
+==== apache.bytesPerReq
 
 type: float
 
 Average rate of bytes per request since last restart of Apache HTTPD server.
 
 
-==== busy_workers
+==== busyWorkers
 
-type: int
+type: integer
 
 The number of worker serving requests.
 
 
-==== idle_workers
+==== idleWorkers
 
-type: intt
+type: integer
 
 The number of idle worker.
 
 
-==== conns_total
+==== apache.connections.connsTotal
 
-type: int
+type: integer
 
 Total connections.
 
 
-==== conns_async_writing
+==== apache.connections.connsAsyncWriting
 
-type: int
+type: integer
 
 Total connections 'ConnsAsyncWriting'.
 
 
-==== conns_async_keep_alive
+==== apache.connections.connsAsyncKeepAlive
 
-type: int
+type: integer
 
 Total connections 'ConnsAsyncKeepAlive'.
 
 
-==== conns_async_closing
+==== apache.connections.connsAsyncClosing
 
-type: int
+type: integer
 
 Total connections 'ConnsAsyncClosing'.
 
 
-==== server_uptime_seconds
-
-type: int
-
-HTTPD Server uptime in seconds.
-
-
-==== apache.load1
+==== apache.load.load1
 
 type: float
 
 Load 1.
 
 
-==== apache.load5
+==== apache.load.load5
 
 type: float
 
 Load 5.
 
 
-==== apache.load15
+==== apache.load.load15
 
 type: float
 
 Load 15.
 
 
-==== scb_starting_up
+==== apache.scoreboard.startingUp
 
-type: int
+type: integer
 
 Total workers 'Starting up'.
 
 
-==== scb_reading_request
+==== apache.scoreboard.readingRequest
 
-type: int
+type: integer
 
 Total workers 'Reading Request'.
 
 
-==== scb_sending_reply
+==== apache.scoreboard.sendingReply
 
-type: int
+type: integer
 
 Total workers 'Sending Reply'.
 
 
-==== scb_keepalive
+==== apache.scoreboard.keepalive
 
-type: int
+type: integer
 
 Total workers 'Keepalive (read)'.
 
 
-==== scb_dns_lookup
+==== apache.scoreboard.dnsLookup
 
-type: int
+type: integer
 
 Total workers 'DNS Lookup'.
 
 
-==== scb_closing_connection
+==== apache.scoreboard.closingConnection
 
-type: int
+type: integer
 
 Total workers 'Closing connection'.
 
 
-==== scb_logging
+==== apache.scoreboard.logging
 
-type: int
+type: integer
 
 Total workers 'Logging'.
 
 
-==== scb_gracefully_finishing
+==== apache.scoreboard.gracefullyFinishing
 
-type: int
+type: integer
 
 Total workers 'Gracefully finishing'.
 
 
-==== scb_idle_cleanup
+==== apache.scoreboard.idleCleanup
 
-type: int
+type: integer
 
 Total workers 'Idle cleanup of worker'.
 
 
-==== scb_open_slot
+==== apache.scoreboard.openSlot
 
-type: int
+type: integer
 
 Total workers 'Open slot with no current process'.
 
 
-==== scb_waiting_for_connection
+==== apache.scoreboard.waitingForConnection
 
-type: int
+type: integer
 
 Total workers 'Waiting for Connection'.
+
+
+==== apache.scoreboard.total
+
+type: integer
+
+Total workers.
 
 
