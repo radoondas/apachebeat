@@ -15,7 +15,7 @@
               "ignore_above": 1024,
               "index": "not_analyzed",
               "type": "{dynamic_type}"
-            },
+            },log
             "match": "*"
           }
         }
@@ -26,33 +26,77 @@
         },
         "apache": {
           "properties": {
-            "bytes_per_req": {
+            "busyWorkers": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "bytesPerReq": {
               "doc_values": "true",
               "type": "float"
             },
-            "bytes_per_sec": {
+            "bytesPerSec": {
               "doc_values": "true",
               "type": "float"
             },
-            "cpu_children_system": {
+            "closingConnection": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "connsAsyncClosing": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "connsAsyncKeepAlive": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "connsAsyncWriting": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "connsTotal": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "cpuChildrenSystem": {
               "doc_values": "true",
               "type": "float"
             },
-            "cpu_children_user": {
+            "cpuChildrenUser": {
               "doc_values": "true",
               "type": "float"
             },
-            "cpu_load": {
+            "cpuLoad": {
               "doc_values": "true",
               "type": "float"
             },
-            "cpu_system": {
+            "cpuSystem": {
               "doc_values": "true",
               "type": "float"
             },
-            "cpu_user": {
+            "cpuUser": {
               "doc_values": "true",
               "type": "float"
+            },
+            "dnsLookup": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "gracefullyFinishing": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "idleCleanup": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "idleWorkers": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "keepalive": {
+              "doc_values": "true",
+              "type": "integer"
             },
             "load1": {
               "doc_values": "true",
@@ -66,9 +110,53 @@
               "doc_values": "true",
               "type": "float"
             },
-            "req_per_sec": {
+            "logging": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "openSlot": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "readingRequest": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "reqPerSec": {
               "doc_values": "true",
               "type": "float"
+            },
+            "sendingReply": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "serverUptimeSeconds": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "startingUp": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "total": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "totalAccesses": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "totalKBytes": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "uptime": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "waitingForConnection": {
+              "doc_values": "true",
+              "type": "integer"
             }
           }
         }

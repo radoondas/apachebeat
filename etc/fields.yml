@@ -26,13 +26,9 @@ env:
         Set to "apache-status" to indicate that the statistics are Apache HTTPD server-status.
       required: true
 
-    - name: count
-      type: int
+    - name: url
       description: >
-        The number of transactions that this event represents. This
-        is generally the inverse of the sampling rate. For example, for
-        a sample rate of 1/10, the count is 10. The count is used by the
-        UIs to return estimated values. Reserved for future usage.
+        Remote Apache HTTPD server-status URL.
       required: true
 
     - name: beat.name
@@ -57,200 +53,204 @@ apache_status:
         Contains Apache HTTPD server-status statistics.
 
       fields:
-        - name: total_access
-          path: total_access
-          type: int
+        - name: totalAccesses
+          path: totalAccesses
+          type: integer
           description: >
             Total access since last restart of Apache HTTPD.
 
-        - name: total_kbytes
-          path: total_kbytes.load5
-          type: int
+        - name: totalKBytes
+          path: totalKBytes
+          type: integer
           description: >
             Total kbytes since last restart of Apache HTTPD.
 
-        - name: cpu_load
-          path: apache.cpu_load
+        - name: cpuLoad
+          path: apache.cpu.cpuLoad
           type: float
           description: >
             CPU load.
 
-        - name: cpu_user
-          path: apache.cpu_user
+        - name: cpuUser
+          path: apache.cpu.cpuUser
           type: float
           description: >
             CPU User.
 
-        - name: cpu_system
-          path: apache.cpu_system
+        - name: cpuSystem
+          path: apache.cpu.cpuSystem
           type: float
           description: >
             CPU System.
 
-        - name: cpu_children_user
-          path: apache.cpu_children_user
+        - name: cpuChildrenUser
+          path: apache.cpu.cpuChildrenUser
           type: float
           description: >
             CPU children user.
 
-        - name: cpu_children_system
-          path: apache.cpu_children_system
+        - name: cpuChildrenSystem
+          path: apache.cpu.cpuChildrenSystem
           type: float
           description: >
             CPU children system.
 
         - name: uptime
-          path: uptime
-          type: int
+          path: apache.uptime.uptime
+          type: integer
           description: >
             Uptime of the Apache HTTPD server.
 
-        - name: req_per_sec
-          path: apache.req_per_sec
+        - name: serverUptimeSeconds
+          path: apache.uptime.serverUptimeSeconds
+          type: integer
+          description: >
+            HTTPD Server uptime in seconds.
+
+        - name: reqPerSec
+          path: apache.reqPerSec
           type: float
           description: >
             Average rate of requests per second since last restart of Apache HTTPD server.
 
-        - name: bytes_per_sec
-          path: apache.bytes_per_sec
+        - name: bytesPerSec
+          path: apache.bytesPerSec
           type: float
           description: >
             Average rate of bytes per second since last restart of Apache HTTPD server.
 
-        - name: bytes_per_req
-          path: apache.bytes_per_req
+        - name: bytesPerReq
+          path: apache.bytesPerReq
           type: float
           description: >
             Average rate of bytes per request since last restart of Apache HTTPD server.
 
-        - name: busy_workers
-          path: busy_workers
-          type: int
+        - name: busyWorkers
+          path: busyWorkers
+          type: integer
           description: >
             The number of worker serving requests.
 
-        - name: idle_workers
-          path: idle_workers
-          type: int
+        - name: idleWorkers
+          path: idleWorkers
+          type: integer
           description: >
             The number of idle worker.
 
-        - name: conns_total
-          path: conns_total
-          type: int
+        - name: connsTotal
+          path: apache.connections.connsTotal
+          type: integer
           description: >
             Total connections.
 
-        - name: conns_async_writing
-          path: conns_async_writing
-          type: int
+        - name: connsAsyncWriting
+          path: apache.connections.connsAsyncWriting
+          type: integer
           description: >
             Total connections 'ConnsAsyncWriting'.
 
-        - name: conns_async_keep_alive
-          path: conns_async_keep_alive
-          type: int
+        - name: connsAsyncKeepAlive
+          path: apache.connections.connsAsyncKeepAlive
+          type: integer
           description: >
             Total connections 'ConnsAsyncKeepAlive'.
 
-        - name: conns_async_closing
-          path: conns_async_closing
-          type: int
+        - name: connsAsyncClosing
+          path: apache.connections.connsAsyncClosing
+          type: integer
           description: >
             Total connections 'ConnsAsyncClosing'.
 
-        - name: server_uptime_seconds
-          path: server_uptime_seconds
-          type: int
-          description: >
-            HTTPD Server uptime in seconds.
-
         - name: load1
-          path: apache.load1
+          path: apache.load.load1
           type: float
           description: >
             Load 1.
 
         - name: load5
-          path: apache.load5
+          path: apache.load.load5
           type: float
           description: >
             Load 5.
 
         - name: load15
-          path: apache.load15
+          path: apache.load.load15
           type: float
           description: >
             Load 15.
 
-        - name: scb_starting_up
-          path: scb_starting_up
-          type: int
+        - name: startingUp
+          path: apache.scoreboard.startingUp
+          type: integer
           description: >
             Total workers 'Starting up'.
 
-        - name: scb_reading_request
-          path: scb_reading_request
-          type: int
+        - name: readingRequest
+          path: apache.scoreboard.readingRequest
+          type: integer
           description: >
             Total workers 'Reading Request'.
 
-        - name: scb_sending_reply
-          path: scb_sending_reply
-          type: int
+        - name: sendingReply
+          path: apache.scoreboard.sendingReply
+          type: integer
           description: >
             Total workers 'Sending Reply'.
 
-        - name: scb_keepalive
-          path: scb_keepalive
-          type: int
+        - name: keepalive
+          path: apache.scoreboard.keepalive
+          type: integer
           description: >
             Total workers 'Keepalive (read)'.
 
-        - name: scb_dns_lookup
-          path: scb_dns_lookup
-          type: int
+        - name: dnsLookup
+          path: apache.scoreboard.dnsLookup
+          type: integer
           description: >
             Total workers 'DNS Lookup'.
 
-        - name: scb_closing_connection
-          path: scb_closing_connection
-          type: int
+        - name: closingConnection
+          path: apache.scoreboard.closingConnection
+          type: integer
           description: >
             Total workers 'Closing connection'.
 
-        - name: scb_logging
-          path: scb_logging
-          type: int
+        - name: logging
+          path: apache.scoreboard.logging
+          type: integer
           description: >
             Total workers 'Logging'.
 
-        - name: scb_gracefully_finishing
-          path: scb_gracefully_finishing
-          type: int
+        - name: gracefullyFinishing
+          path: apache.scoreboard.gracefullyFinishing
+          type: integer
           description: >
             Total workers 'Gracefully finishing'.
 
-        - name: scb_idle_cleanup
-          path: scb_idle_cleanup
-          type: int
+        - name: idleCleanup
+          path: apache.scoreboard.idleCleanup
+          type: integer
           description: >
             Total workers 'Idle cleanup of worker'.
 
-        - name: scb_open_slot
-          path: scb_open_slot
-          type: int
+        - name: openSlot
+          path: apache.scoreboard.openSlot
+          type: integer
           description: >
             Total workers 'Open slot with no current process'.
 
-        - name: scb_waiting_for_connection
-          path: scb_waiting_for_connection
-          type: int
+        - name: waitingForConnection
+          path: apache.scoreboard.waitingForConnection
+          type: integer
           description: >
             Total workers 'Waiting for Connection'.
 
-        - name: scb_total
-          path: scb_total
-          type: int
+        - name: total
+          path: apache.scoreboard.total
+          type: integer
           description: >
             Total workers.
+
+sections:
+  - ["env", "Common"]
+  - ["apache_status", "Apache HTTPD server-status metrics"]

@@ -7,9 +7,8 @@ import (
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/cfgfile"
 	"github.com/elastic/beats/libbeat/logp"
-
-	"github.com/radoondas/apachebeat/collector"
-	"github.com/radoondas/apachebeat/publisher"
+	"github.com/elastic/beats/libbeat/publisher"
+	"github.com/elastic/beats/libbeat/common"
 )
 
 const selector = "apachebeat"
@@ -17,13 +16,13 @@ const selector = "apachebeat"
 // ApacheBeat implements Beater interface and sends Apache HTTPD status using libbeat.
 type ApacheBeat struct {
 	// ApConfig holds configurations of Apachebeat parsed by libbeat.
+	urls   []*url.URL
+	period time.Duration
+
 	AbConfig ConfigSettings
+	events   publisher.Client
 
 	done chan struct{}
-
-	urls []*url.URL
-
-	period time.Duration
 }
 
 func New() *ApacheBeat {
@@ -32,7 +31,6 @@ func New() *ApacheBeat {
 	}
 }
 
-// Config ApacheBeat according to apachebeat.yml.
 func (ab *ApacheBeat) Config(b *beat.Beat) error {
 	//read config file
 	err := cfgfile.Read(&ab.AbConfig, "")
@@ -72,25 +70,19 @@ func (ab *ApacheBeat) Config(b *beat.Beat) error {
 	return nil
 }
 
-// Setup ApacheBeat.
 func (ab *ApacheBeat) Setup(b *beat.Beat) error {
+	ab.events = b.Events
 	ab.done = make(chan struct{})
 
 	return nil
 }
 
-// Run Apachebeat.
 func (ab *ApacheBeat) Run(b *beat.Beat) error {
 	logp.Debug(selector, "Run apachebeat")
 
+	//for each url
 	for _, u := range ab.urls {
 		go func(u *url.URL) {
-			var c collector.Collector
-			var p publisher.Publisher
-
-			c = collector.NewStubCollector()
-			p = publisher.NewStubPublisher(b.Events)
-
 			ticker := time.NewTicker(ab.period)
 			defer ticker.Stop()
 
@@ -101,19 +93,28 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 				case <-ticker.C:
 				}
 
-				start := time.Now()
+				timerStart := time.Now()
 
-				s, err := c.Collect(*u)
+				//if eb.clusterStats {
+				logp.Debug(selector, "Cluster stats for url: %v", u)
+				serverStatus, error := ab.GetServerStatus(*u)
+				if error != nil {
+					logp.Err("Error reading cluster stats: %v", error)
+				} else {
+					logp.Debug(selector, "Apache  detail: %+v", serverStatus)
 
-				if err != nil {
-					logp.Err("Fail to read Apache HTTPD status: %v", err)
-					goto GotoNext
+					event := common.MapStr{
+						"@timestamp": common.Time(time.Now()),
+						"type":       "apache-status", //TODO: NAMING??
+						"url":        u.String(),
+						"apache":     serverStatus, //TODO: NAMING??
+					}
+
+					ab.events.PublishEvent(event)
 				}
-				p.Publish(s, u.String())
 
-			GotoNext:
-				end := time.Now()
-				duration := end.Sub(start)
+				timerEnd := time.Now()
+				duration := timerEnd.Sub(timerStart)
 				if duration.Nanoseconds() > ab.period.Nanoseconds() {
 					logp.Warn("Ignoring tick(s) due to processing taking longer than one period")
 				}
@@ -127,12 +128,10 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 	return nil
 }
 
-// Cleanup Apachebeat.
 func (ab *ApacheBeat) Cleanup(b *beat.Beat) error {
 	return nil
 }
 
-// Stop Apachebeat.
 func (ab *ApacheBeat) Stop() {
 	logp.Debug(selector, "Stop Apachebeat")
 	close(ab.done)

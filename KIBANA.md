@@ -27,4 +27,4 @@ For more options:
 
 ## Examples
 
-![Apache HTTPD server-status](/doc/images/apache-server-status.png)
+![Apache HTTPD server-status](/docs/images/apache-server-status.png)
