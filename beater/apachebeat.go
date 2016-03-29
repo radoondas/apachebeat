@@ -105,7 +105,7 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 
 					event := common.MapStr{
 						"@timestamp": common.Time(time.Now()),
-						"type":       "apache-status", //TODO: NAMING??
+						"type":       "apache_status", //TODO: NAMING??
 						"url":        u.String(),
 						"apache":     serverStatus, //TODO: NAMING??
 					}
