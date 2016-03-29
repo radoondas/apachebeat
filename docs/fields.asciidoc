@@ -78,58 +78,9 @@ Total access since last restart of Apache HTTPD.
 
 ==== totalKBytes
 
-type: integer
+type: long
 
 Total kbytes since last restart of Apache HTTPD.
-
-
-==== apache.cpu.cpuLoad
-
-type: float
-
-CPU load.
-
-
-==== apache.cpu.cpuUser
-
-type: float
-
-CPU User.
-
-
-==== apache.cpu.cpuSystem
-
-type: float
-
-CPU System.
-
-
-==== apache.cpu.cpuChildrenUser
-
-type: float
-
-CPU children user.
-
-
-==== apache.cpu.cpuChildrenSystem
-
-type: float
-
-CPU children system.
-
-
-==== apache.uptime.uptime
-
-type: integer
-
-Uptime of the Apache HTTPD server.
-
-
-==== apache.uptime.serverUptimeSeconds
-
-type: integer
-
-HTTPD Server uptime in seconds.
 
 
 ==== apache.reqPerSec
@@ -167,6 +118,73 @@ type: integer
 The number of idle worker.
 
 
+=== cpu Fields
+
+Contains cpu metrics.
+
+
+
+==== apache.cpu.cpuLoad
+
+type: float
+
+CPU load.
+
+
+==== apache.cpu.cpuUser
+
+type: float
+
+CPU User.
+
+
+==== apache.cpu.cpuSystem
+
+type: float
+
+CPU System.
+
+
+==== apache.cpu.cpuChildrenUser
+
+type: float
+
+CPU children user.
+
+
+==== apache.cpu.cpuChildrenSystem
+
+type: float
+
+CPU children system.
+
+
+=== uptime Fields
+
+Groups uptime metrics.
+
+
+
+==== apache.uptime.uptime
+
+type: integer
+
+Uptime of the Apache HTTPD server.
+
+
+==== apache.uptime.serverUptimeSeconds
+
+type: integer
+
+HTTPD Server uptime in seconds.
+
+
+=== connections Fields
+
+Groups connections metrics.
+
+
+
 ==== apache.connections.connsTotal
 
 type: integer
@@ -195,6 +213,12 @@ type: integer
 Total connections 'ConnsAsyncClosing'.
 
 
+=== load Fields
+
+Contains load metrics.
+
+
+
 ==== apache.load.load1
 
 type: float
@@ -214,6 +238,12 @@ Load 5.
 type: float
 
 Load 15.
+
+
+=== scoreboard Fields
+
+Contains scoreboard metrics.
+
 
 
 ==== apache.scoreboard.startingUp
