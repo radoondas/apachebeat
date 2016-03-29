@@ -99,7 +99,7 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 				logp.Debug(selector, "Cluster stats for url: %v", u)
 				serverStatus, error := ab.GetServerStatus(*u)
 				if error != nil {
-					logp.Err("Error reading cluster stats: %v", error)
+					logp.Err("Error getting server-status for %s: %v", u.String(), error)
 				} else {
 					logp.Debug(selector, "Apache  detail: %+v", serverStatus)
 
