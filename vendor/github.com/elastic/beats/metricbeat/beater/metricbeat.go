@@ -27,19 +27,16 @@ for each MetricSet to prevent type conflicts. Also all values are stored under t
 package beater
 
 import (
-	"fmt"
-
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/cfgfile"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/metricbeat/helper"
+	"github.com/elastic/beats/metricbeat/include"
 )
 
 type Metricbeat struct {
-	done          chan struct{}
-	MbConfig      *MetricbeatConfig
-	ModulesConfig *RawModulesConfig
-	MetricsConfig *RawMetricsConfig
+	done     chan struct{}
+	MbConfig *Config
 }
 
 // New creates a new Metricbeat instance
@@ -49,51 +46,15 @@ func New() *Metricbeat {
 
 func (mb *Metricbeat) Config(b *beat.Beat) error {
 
-	mb.MbConfig = &MetricbeatConfig{}
+	mb.MbConfig = &Config{}
 	err := cfgfile.Read(mb.MbConfig, "")
 	if err != nil {
-		fmt.Println(err)
 		logp.Err("Error reading configuration file: %v", err)
 		return err
 	}
 
-	mb.ModulesConfig = &RawModulesConfig{}
-	err = cfgfile.Read(mb.ModulesConfig, "")
-	if err != nil {
-		fmt.Println(err)
-		logp.Err("Error reading configuration file: %v", err)
-		return err
-	}
-
-	mb.MetricsConfig = &RawMetricsConfig{}
-	err = cfgfile.Read(mb.MetricsConfig, "")
-	if err != nil {
-		fmt.Println(err)
-		logp.Err("Error reading configuration file: %v", err)
-		return err
-	}
-
-	logp.Info("Setup base and raw configuration for Modules and Metrics")
-	// Apply the base configuration to each module and metric
-	for moduleName, module := range helper.Registry {
-		// Check if config for module exist. Only configured modules are loaded
-		if _, ok := mb.MbConfig.Metricbeat.Modules[moduleName]; !ok {
-			continue
-		}
-		module.BaseConfig = mb.MbConfig.getModuleConfig(moduleName)
-		module.RawConfig = mb.ModulesConfig.Metricbeat.Modules[moduleName]
-		module.Enabled = true
-
-		for metricSetName, metricSet := range module.MetricSets {
-			// Check if config for metricset exist. Only configured metricset are loaded
-			if _, ok := mb.MbConfig.getModuleConfig(moduleName).MetricSets[metricSetName]; !ok {
-				continue
-			}
-			metricSet.BaseConfig = mb.MbConfig.getModuleConfig(moduleName).MetricSets[metricSetName]
-			metricSet.RawConfig = mb.MetricsConfig.Metricbeat.Modules[moduleName].MetricSets[metricSetName]
-			metricSet.Enabled = true
-		}
-	}
+	// List all registered modules and metricsets
+	include.ListAll()
 
 	return nil
 }
@@ -105,7 +66,20 @@ func (mb *Metricbeat) Setup(b *beat.Beat) error {
 
 func (mb *Metricbeat) Run(b *beat.Beat) error {
 
-	helper.StartModules(b)
+	// Checks all defined metricsets and starts a module for each entry with the defined metricsets
+	for _, moduleConfig := range mb.MbConfig.Metricbeat.Modules {
+
+		module, err := helper.Registry.GetModule(moduleConfig)
+		if err != nil {
+			return err
+		}
+
+		err = module.Start(b)
+		if err != nil {
+			return err
+		}
+	}
+
 	<-mb.done
 
 	return nil

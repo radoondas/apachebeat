@@ -12,11 +12,13 @@ include::./command-line.asciidoc[]
 
 include::./configuring-howto.asciidoc[]
 
+include::../../libbeat/docs/shared-env-vars.asciidoc[]
+
 include::../../libbeat/docs/https.asciidoc[]
 
 include::./troubleshooting.asciidoc[]
 
-//include::./faq.asciidoc[]
+include::./faq.asciidoc[]
 
 include::./reference.asciidoc[]
 

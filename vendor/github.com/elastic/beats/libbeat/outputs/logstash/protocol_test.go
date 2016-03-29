@@ -1,3 +1,5 @@
+// Need for unit and integration tests
+
 package logstash
 
 import (
@@ -43,7 +45,7 @@ func (d document) get(path string) interface{} {
 }
 
 func newProtoServerTCP(t *testing.T, to time.Duration) *protocolServer {
-	return &protocolServer{newMockServerTCP(t, to, "")}
+	return &protocolServer{newMockServerTCP(t, to, "", nil)}
 }
 
 func (s *protocolServer) connectPair(compressLevel int) (*mockConn, *protocol, error) {

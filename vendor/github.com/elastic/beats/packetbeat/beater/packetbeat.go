@@ -12,35 +12,19 @@ import (
 	"github.com/elastic/beats/libbeat/common/droppriv"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/libbeat/service"
+	"github.com/tsg/gopacket/layers"
 
 	"github.com/elastic/beats/packetbeat/config"
+	"github.com/elastic/beats/packetbeat/decoder"
+	"github.com/elastic/beats/packetbeat/flows"
 	"github.com/elastic/beats/packetbeat/procs"
 	"github.com/elastic/beats/packetbeat/protos"
-	"github.com/elastic/beats/packetbeat/protos/dns"
-	"github.com/elastic/beats/packetbeat/protos/http"
 	"github.com/elastic/beats/packetbeat/protos/icmp"
-	"github.com/elastic/beats/packetbeat/protos/memcache"
-	"github.com/elastic/beats/packetbeat/protos/mongodb"
-	"github.com/elastic/beats/packetbeat/protos/mysql"
-	"github.com/elastic/beats/packetbeat/protos/pgsql"
-	"github.com/elastic/beats/packetbeat/protos/redis"
 	"github.com/elastic/beats/packetbeat/protos/tcp"
-	"github.com/elastic/beats/packetbeat/protos/thrift"
 	"github.com/elastic/beats/packetbeat/protos/udp"
 	"github.com/elastic/beats/packetbeat/publish"
 	"github.com/elastic/beats/packetbeat/sniffer"
 )
-
-var EnabledProtocolPlugins map[protos.Protocol]protos.ProtocolPlugin = map[protos.Protocol]protos.ProtocolPlugin{
-	protos.HttpProtocol:     new(http.HTTP),
-	protos.MemcacheProtocol: new(memcache.Memcache),
-	protos.MysqlProtocol:    new(mysql.Mysql),
-	protos.PgsqlProtocol:    new(pgsql.Pgsql),
-	protos.RedisProtocol:    new(redis.Redis),
-	protos.ThriftProtocol:   new(thrift.Thrift),
-	protos.MongodbProtocol:  new(mongodb.Mongodb),
-	protos.DnsProtocol:      new(dns.Dns),
-}
 
 // Beater object. Contains all objects needed to run the beat
 type Packetbeat struct {
@@ -49,6 +33,11 @@ type Packetbeat struct {
 	Pub         *publish.PacketbeatPublisher
 	Sniff       *sniffer.SnifferSetup
 	over        chan bool
+
+	services []interface {
+		Start()
+		Stop()
+	}
 }
 
 type CmdLineArgs struct {
@@ -64,7 +53,8 @@ type CmdLineArgs struct {
 var cmdLineArgs CmdLineArgs
 
 const (
-	defaultQueueSize = 2048
+	defaultQueueSize     = 2048
+	defaultBulkQueueSize = 0
 )
 
 func init() {
@@ -116,6 +106,9 @@ func (pb *Packetbeat) Config(b *beat.Beat) error {
 
 	// Read beat implementation config as needed for setup
 	err := cfgfile.Read(&pb.PbConfig, "")
+	if err != nil {
+		logp.Err("fails to read the beat config: %v, %v", err, pb.PbConfig)
+	}
 
 	// CLI flags over-riding config
 	if *pb.CmdLineArgs.TopSpeed {
@@ -148,64 +141,107 @@ func (pb *Packetbeat) Setup(b *beat.Beat) error {
 		os.Exit(1)
 	}
 
-	pb.Sniff = new(sniffer.SnifferSetup)
-
 	queueSize := defaultQueueSize
 	if pb.PbConfig.Shipper.QueueSize != nil {
 		queueSize = *pb.PbConfig.Shipper.QueueSize
 	}
-	pb.Pub = publish.NewPublisher(b.Publisher, queueSize)
+	bulkQueueSize := defaultBulkQueueSize
+	if pb.PbConfig.Shipper.BulkQueueSize != nil {
+		bulkQueueSize = *pb.PbConfig.Shipper.BulkQueueSize
+	}
+	pb.Pub = publish.NewPublisher(b.Publisher, queueSize, bulkQueueSize)
 	pb.Pub.Start()
 
 	logp.Debug("main", "Initializing protocol plugins")
-	for proto, plugin := range EnabledProtocolPlugins {
-		err := plugin.Init(false, pb.Pub)
-		if err != nil {
-			logp.Critical("Initializing plugin %s failed: %v", proto, err)
-			os.Exit(1)
-		}
-		protos.Protos.Register(proto, plugin)
-	}
-
-	var err error
-
-	icmpProc, err := icmp.NewIcmp(false, pb.Pub)
+	err := protos.Protos.Init(false, pb.Pub, pb.PbConfig.Protocols)
 	if err != nil {
-		logp.Critical(err.Error())
-		os.Exit(1)
-	}
-
-	tcpProc, err := tcp.NewTcp(&protos.Protos)
-	if err != nil {
-		logp.Critical(err.Error())
-		os.Exit(1)
-	}
-
-	udpProc, err := udp.NewUdp(&protos.Protos)
-	if err != nil {
-		logp.Critical(err.Error())
+		logp.Critical("Initializing protocol analyzers failed: %v", err)
 		os.Exit(1)
 	}
 
 	pb.over = make(chan bool)
 
 	logp.Debug("main", "Initializing sniffer")
-	err = pb.Sniff.Init(false, icmpProc, icmpProc, tcpProc, udpProc)
-	if err != nil {
+	if err := pb.setupSniffer(); err != nil {
 		logp.Critical("Initializing sniffer failed: %v", err)
 		os.Exit(1)
 	}
 
 	// This needs to be after the sniffer Init but before the sniffer Run.
-	if err = droppriv.DropPrivileges(config.ConfigSingleton.RunOptions); err != nil {
+	if err := droppriv.DropPrivileges(config.ConfigSingleton.RunOptions); err != nil {
 		logp.Critical(err.Error())
 		os.Exit(1)
 	}
 
-	return err
+	return nil
+}
+
+func (pb *Packetbeat) setupSniffer() error {
+	cfg := &pb.PbConfig
+
+	withVlans := cfg.Interfaces.With_vlans
+	_, withICMP := cfg.Protocols["icmp"]
+	filter := cfg.Interfaces.Bpf_filter
+	if filter == "" && cfg.Flows == nil {
+		filter = protos.Protos.BpfFilter(withVlans, withICMP)
+	}
+
+	pb.Sniff = &sniffer.SnifferSetup{}
+	return pb.Sniff.Init(false, pb.makeWorkerFactory(filter))
+}
+
+func (pb *Packetbeat) makeWorkerFactory(filter string) sniffer.WorkerFactory {
+	return func(dl layers.LinkType) (sniffer.Worker, string, error) {
+		var f *flows.Flows
+		var err error
+
+		if pb.PbConfig.Flows != nil {
+			f, err = flows.NewFlows(pb.Pub, pb.PbConfig.Flows)
+			if err != nil {
+				return nil, "", err
+			}
+		}
+
+		var icmp4 icmp.ICMPv4Processor
+		var icmp6 icmp.ICMPv6Processor
+		if cfg, exists := pb.PbConfig.Protocols["icmp"]; exists {
+			icmp, err := icmp.New(false, pb.Pub, cfg)
+			if err != nil {
+				return nil, "", err
+			}
+
+			icmp4 = icmp
+			icmp6 = icmp
+		}
+
+		tcp, err := tcp.NewTcp(&protos.Protos)
+		if err != nil {
+			return nil, "", err
+		}
+
+		udp, err := udp.NewUdp(&protos.Protos)
+		if err != nil {
+			return nil, "", err
+		}
+
+		worker, err := decoder.NewDecoder(f, dl, icmp4, icmp6, tcp, udp)
+		if err != nil {
+			return nil, "", err
+		}
+
+		if f != nil {
+			pb.services = append(pb.services, f)
+		}
+		return worker, filter, nil
+	}
 }
 
 func (pb *Packetbeat) Run(b *beat.Beat) error {
+
+	// start services
+	for _, service := range pb.services {
+		service.Start()
+	}
 
 	// run the sniffer in background
 	go func() {
@@ -228,6 +264,11 @@ func (pb *Packetbeat) Run(b *beat.Beat) error {
 		if !pb.Sniff.IsAlive() {
 			break
 		}
+	}
+
+	// kill services
+	for _, service := range pb.services {
+		service.Stop()
 	}
 
 	waitShutdown := pb.CmdLineArgs.WaitShutdown
