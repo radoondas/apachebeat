@@ -61,51 +61,9 @@ apache_status:
 
         - name: totalKBytes
           path: totalKBytes
-          type: integer
+          type: long
           description: >
             Total kbytes since last restart of Apache HTTPD.
-
-        - name: cpuLoad
-          path: apache.cpu.cpuLoad
-          type: float
-          description: >
-            CPU load.
-
-        - name: cpuUser
-          path: apache.cpu.cpuUser
-          type: float
-          description: >
-            CPU User.
-
-        - name: cpuSystem
-          path: apache.cpu.cpuSystem
-          type: float
-          description: >
-            CPU System.
-
-        - name: cpuChildrenUser
-          path: apache.cpu.cpuChildrenUser
-          type: float
-          description: >
-            CPU children user.
-
-        - name: cpuChildrenSystem
-          path: apache.cpu.cpuChildrenSystem
-          type: float
-          description: >
-            CPU children system.
-
-        - name: uptime
-          path: apache.uptime.uptime
-          type: integer
-          description: >
-            Uptime of the Apache HTTPD server.
-
-        - name: serverUptimeSeconds
-          path: apache.uptime.serverUptimeSeconds
-          type: integer
-          description: >
-            HTTPD Server uptime in seconds.
 
         - name: reqPerSec
           path: apache.reqPerSec
@@ -137,119 +95,191 @@ apache_status:
           description: >
             The number of idle worker.
 
-        - name: connsTotal
-          path: apache.connections.connsTotal
-          type: integer
+        - name: cpu
+          type: group
           description: >
-            Total connections.
+            Contains cpu metrics.
 
-        - name: connsAsyncWriting
-          path: apache.connections.connsAsyncWriting
-          type: integer
-          description: >
-            Total connections 'ConnsAsyncWriting'.
+          fields:
+            - name: cpuLoad
+              path: apache.cpu.cpuLoad
+              type: float
+              description: >
+                CPU load.
 
-        - name: connsAsyncKeepAlive
-          path: apache.connections.connsAsyncKeepAlive
-          type: integer
-          description: >
-            Total connections 'ConnsAsyncKeepAlive'.
+            - name: cpuUser
+              path: apache.cpu.cpuUser
+              type: float
+              description: >
+                CPU User.
 
-        - name: connsAsyncClosing
-          path: apache.connections.connsAsyncClosing
-          type: integer
-          description: >
-            Total connections 'ConnsAsyncClosing'.
+            - name: cpuSystem
+              path: apache.cpu.cpuSystem
+              type: float
+              description: >
+                CPU System.
 
-        - name: load1
-          path: apache.load.load1
-          type: float
-          description: >
-            Load 1.
+            - name: cpuChildrenUser
+              path: apache.cpu.cpuChildrenUser
+              type: float
+              description: >
+                CPU children user.
 
-        - name: load5
-          path: apache.load.load5
-          type: float
-          description: >
-            Load 5.
+            - name: cpuChildrenSystem
+              path: apache.cpu.cpuChildrenSystem
+              type: float
+              description: >
+                CPU children system.
 
-        - name: load15
-          path: apache.load.load15
-          type: float
+        - name: uptime
+          type: group
           description: >
-            Load 15.
+            Groups uptime metrics.
 
-        - name: startingUp
-          path: apache.scoreboard.startingUp
-          type: integer
-          description: >
-            Total workers 'Starting up'.
+          fields:
+            - name: uptime
+              path: apache.uptime.uptime
+              type: integer
+              description: >
+                Uptime of the Apache HTTPD server.
 
-        - name: readingRequest
-          path: apache.scoreboard.readingRequest
-          type: integer
-          description: >
-            Total workers 'Reading Request'.
+            - name: serverUptimeSeconds
+              path: apache.uptime.serverUptimeSeconds
+              type: integer
+              description: >
+                HTTPD Server uptime in seconds.
 
-        - name: sendingReply
-          path: apache.scoreboard.sendingReply
-          type: integer
+        - name: connections
+          type: group
           description: >
-            Total workers 'Sending Reply'.
+            Groups connections metrics.
 
-        - name: keepalive
-          path: apache.scoreboard.keepalive
-          type: integer
-          description: >
-            Total workers 'Keepalive (read)'.
+          fields:
+            - name: connsTotal
+              path: apache.connections.connsTotal
+              type: integer
+              description: >
+                Total connections.
 
-        - name: dnsLookup
-          path: apache.scoreboard.dnsLookup
-          type: integer
-          description: >
-            Total workers 'DNS Lookup'.
+            - name: connsAsyncWriting
+              path: apache.connections.connsAsyncWriting
+              type: integer
+              description: >
+                Total connections 'ConnsAsyncWriting'.
 
-        - name: closingConnection
-          path: apache.scoreboard.closingConnection
-          type: integer
-          description: >
-            Total workers 'Closing connection'.
+            - name: connsAsyncKeepAlive
+              path: apache.connections.connsAsyncKeepAlive
+              type: integer
+              description: >
+                Total connections 'ConnsAsyncKeepAlive'.
 
-        - name: logging
-          path: apache.scoreboard.logging
-          type: integer
-          description: >
-            Total workers 'Logging'.
+            - name: connsAsyncClosing
+              path: apache.connections.connsAsyncClosing
+              type: integer
+              description: >
+                Total connections 'ConnsAsyncClosing'.
 
-        - name: gracefullyFinishing
-          path: apache.scoreboard.gracefullyFinishing
-          type: integer
+        - name: load
+          type: group
           description: >
-            Total workers 'Gracefully finishing'.
+            Contains load metrics.
 
-        - name: idleCleanup
-          path: apache.scoreboard.idleCleanup
-          type: integer
-          description: >
-            Total workers 'Idle cleanup of worker'.
+          fields:
+            - name: load1
+              path: apache.load.load1
+              type: float
+              description: >
+                Load 1.
 
-        - name: openSlot
-          path: apache.scoreboard.openSlot
-          type: integer
-          description: >
-            Total workers 'Open slot with no current process'.
+            - name: load5
+              path: apache.load.load5
+              type: float
+              description: >
+                Load 5.
 
-        - name: waitingForConnection
-          path: apache.scoreboard.waitingForConnection
-          type: integer
-          description: >
-            Total workers 'Waiting for Connection'.
+            - name: load15
+              path: apache.load.load15
+              type: float
+              description: >
+                Load 15.
 
-        - name: total
-          path: apache.scoreboard.total
-          type: integer
+        - name: scoreboard
+          type: group
           description: >
-            Total workers.
+            Contains scoreboard metrics.
+
+          fields:
+            - name: startingUp
+              path: apache.scoreboard.startingUp
+              type: integer
+              description: >
+                Total workers 'Starting up'.
+
+            - name: readingRequest
+              path: apache.scoreboard.readingRequest
+              type: integer
+              description: >
+                Total workers 'Reading Request'.
+
+            - name: sendingReply
+              path: apache.scoreboard.sendingReply
+              type: integer
+              description: >
+                Total workers 'Sending Reply'.
+
+            - name: keepalive
+              path: apache.scoreboard.keepalive
+              type: integer
+              description: >
+                Total workers 'Keepalive (read)'.
+
+            - name: dnsLookup
+              path: apache.scoreboard.dnsLookup
+              type: integer
+              description: >
+                Total workers 'DNS Lookup'.
+
+            - name: closingConnection
+              path: apache.scoreboard.closingConnection
+              type: integer
+              description: >
+                Total workers 'Closing connection'.
+
+            - name: logging
+              path: apache.scoreboard.logging
+              type: integer
+              description: >
+                Total workers 'Logging'.
+
+            - name: gracefullyFinishing
+              path: apache.scoreboard.gracefullyFinishing
+              type: integer
+              description: >
+                Total workers 'Gracefully finishing'.
+
+            - name: idleCleanup
+              path: apache.scoreboard.idleCleanup
+              type: integer
+              description: >
+                Total workers 'Idle cleanup of worker'.
+
+            - name: openSlot
+              path: apache.scoreboard.openSlot
+              type: integer
+              description: >
+                Total workers 'Open slot with no current process'.
+
+            - name: waitingForConnection
+              path: apache.scoreboard.waitingForConnection
+              type: integer
+              description: >
+                Total workers 'Waiting for Connection'.
+
+            - name: total
+              path: apache.scoreboard.total
+              type: integer
+              description: >
+                Total workers.
 
 sections:
   - ["env", "Common"]
