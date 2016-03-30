@@ -26,49 +26,157 @@
         },
         "apache": {
           "properties": {
-            "bytes_per_req": {
+            "busyWorkers": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "bytesPerReq": {
               "doc_values": "true",
               "type": "float"
             },
-            "bytes_per_sec": {
+            "bytesPerSec": {
               "doc_values": "true",
               "type": "float"
             },
-            "cpu_children_system": {
+            "connections": {
+              "properties": {
+                "connsAsyncClosing": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "connsAsyncKeepAlive": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "connsAsyncWriting": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "connsTotal": {
+                  "doc_values": "true",
+                  "type": "integer"
+                }
+              }
+            },
+            "cpu": {
+              "properties": {
+                "cpuChildrenSystem": {
+                  "doc_values": "true",
+                  "type": "float"
+                },
+                "cpuChildrenUser": {
+                  "doc_values": "true",
+                  "type": "float"
+                },
+                "cpuLoad": {
+                  "doc_values": "true",
+                  "type": "float"
+                },
+                "cpuSystem": {
+                  "doc_values": "true",
+                  "type": "float"
+                },
+                "cpuUser": {
+                  "doc_values": "true",
+                  "type": "float"
+                }
+              }
+            },
+            "idleWorkers": {
+              "doc_values": "true",
+              "type": "integer"
+            },
+            "load": {
+              "properties": {
+                "load1": {
+                  "doc_values": "true",
+                  "type": "float"
+                },
+                "load15": {
+                  "doc_values": "true",
+                  "type": "float"
+                },
+                "load5": {
+                  "doc_values": "true",
+                  "type": "float"
+                }
+              }
+            },
+            "reqPerSec": {
               "doc_values": "true",
               "type": "float"
             },
-            "cpu_children_user": {
-              "doc_values": "true",
-              "type": "float"
+            "scoreboard": {
+              "properties": {
+                "closingConnection": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "dnsLookup": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "gracefullyFinishing": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "idleCleanup": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "keepalive": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "logging": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "openSlot": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "readingRequest": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "sendingReply": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "startingUp": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "total": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "waitingForConnection": {
+                  "doc_values": "true",
+                  "type": "integer"
+                }
+              }
             },
-            "cpu_load": {
+            "totalAccesses": {
               "doc_values": "true",
-              "type": "float"
+              "type": "integer"
             },
-            "cpu_system": {
+            "totalKBytes": {
               "doc_values": "true",
-              "type": "float"
+              "type": "long"
             },
-            "cpu_user": {
-              "doc_values": "true",
-              "type": "float"
-            },
-            "load1": {
-              "doc_values": "true",
-              "type": "float"
-            },
-            "load15": {
-              "doc_values": "true",
-              "type": "float"
-            },
-            "load5": {
-              "doc_values": "true",
-              "type": "float"
-            },
-            "req_per_sec": {
-              "doc_values": "true",
-              "type": "float"
+            "uptime": {
+              "properties": {
+                "serverUptimeSeconds": {
+                  "doc_values": "true",
+                  "type": "integer"
+                },
+                "uptime": {
+                  "doc_values": "true",
+                  "type": "integer"
+                }
+              }
             }
           }
         }

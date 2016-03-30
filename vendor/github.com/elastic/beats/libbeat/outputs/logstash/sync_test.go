@@ -1,3 +1,5 @@
+// +build !integration
+
 package logstash
 
 import (
@@ -42,7 +44,7 @@ func TestClientMultiFailMaxTimeouts(t *testing.T) {
 }
 
 func newClientServerTCP(t *testing.T, to time.Duration) *clientServer {
-	return &clientServer{newMockServerTCP(t, to, "")}
+	return &clientServer{newMockServerTCP(t, to, "", nil)}
 }
 
 func (s *clientServer) connectPair(compressLevel int) (*mockConn, *client, error) {
@@ -52,7 +54,7 @@ func (s *clientServer) connectPair(compressLevel int) (*mockConn, *client, error
 	}
 
 	lc, err := newLumberjackClient(transp, compressLevel,
-		defaultMaxWindowSize, 100*time.Millisecond)
+		defaultConfig.BulkMaxSize, 100*time.Millisecond)
 	if err != nil {
 		return nil, nil, err
 	}

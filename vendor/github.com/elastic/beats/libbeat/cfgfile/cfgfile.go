@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
-	"gopkg.in/yaml.v2"
 )
 
 // Command line flags
@@ -53,13 +53,17 @@ func Read(out interface{}, path string) error {
 	if err != nil {
 		return fmt.Errorf("Failed to read %s: %v. Exiting.", path, err)
 	}
-
 	filecontent = expandEnv(filecontent)
 
-	if err = yaml.Unmarshal(filecontent, out); err != nil {
-		return fmt.Errorf("YAML config parsing failed on %s: %v. Exiting", path, err)
+	config, err := common.NewConfigWithYAML(filecontent, path)
+	if err != nil {
+		return fmt.Errorf("YAML config parsing failed on %s: %v. Exiting.", path, err)
 	}
 
+	err = config.Unpack(out)
+	if err != nil {
+		return fmt.Errorf("Failed to apply config %s: %v. Exiting. ", path, err)
+	}
 	return nil
 }
 

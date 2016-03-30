@@ -1,3 +1,5 @@
+// +build !integration
+
 package logstash
 
 import (
@@ -54,7 +56,7 @@ const testMaxWindowSize = 64
 func testSendZero(t *testing.T, factory clientFactory) {
 	enableLogging([]string{"*"})
 
-	server := newMockServerTCP(t, 1*time.Second, "")
+	server := newMockServerTCP(t, 1*time.Second, "", nil)
 	defer server.Close()
 
 	sock, transp, err := server.connectPair(1 * time.Second)
@@ -80,7 +82,7 @@ func testSendZero(t *testing.T, factory clientFactory) {
 
 func testSimpleEvent(t *testing.T, factory clientFactory) {
 	enableLogging([]string{"*"})
-	server := newMockServerTCP(t, 1*time.Second, "")
+	server := newMockServerTCP(t, 1*time.Second, "", nil)
 
 	sock, transp, err := server.connectPair(1 * time.Second)
 	if err != nil {
@@ -119,7 +121,7 @@ func testSimpleEvent(t *testing.T, factory clientFactory) {
 
 func testStructuredEvent(t *testing.T, factory clientFactory) {
 	enableLogging([]string{"*"})
-	server := newMockServerTCP(t, 1*time.Second, "")
+	server := newMockServerTCP(t, 1*time.Second, "", nil)
 
 	sock, transp, err := server.connectPair(1 * time.Second)
 	if err != nil {
@@ -172,7 +174,7 @@ func testStructuredEvent(t *testing.T, factory clientFactory) {
 
 func testCloseAfterWindowSize(t *testing.T, factory clientFactory) {
 	enableLogging([]string{"*"})
-	server := newMockServerTCP(t, 100*time.Millisecond, "")
+	server := newMockServerTCP(t, 100*time.Millisecond, "", nil)
 
 	sock, transp, err := server.connectPair(100 * time.Millisecond)
 	if err != nil {
@@ -198,7 +200,7 @@ func testCloseAfterWindowSize(t *testing.T, factory clientFactory) {
 func testMultiFailMaxTimeouts(t *testing.T, factory clientFactory) {
 	enableLogging([]string{"*"})
 
-	server := newMockServerTCP(t, 100*time.Millisecond, "")
+	server := newMockServerTCP(t, 100*time.Millisecond, "", nil)
 	transp, err := server.transp()
 	if err != nil {
 		t.Fatalf("Failed to connect server and client: %v", err)

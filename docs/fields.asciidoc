@@ -1,0 +1,332 @@
+
+////
+This file is generated! See etc/fields.yml and scripts/generate_field_docs.py
+////
+
+[[exported-fields]]
+== Exported Fields
+
+This document describes the fields that are exported by Apachebeat. They are
+grouped in the following categories:
+
+* <<exported-fields-env>>
+* <<exported-fields-apache_status>>
+
+[[exported-fields-env]]
+=== Common Fields
+
+Contains common fields available in all event types.
+
+
+
+==== @timestamp
+
+type: date
+
+example: 2015-01-24 14:06:05.071000
+
+format: YYYY-MM-DDTHH:MM:SS.milliZ
+
+required: True
+
+The timestamp of when the measurements were taken. The precision is in milliseconds. The timezone is UTC.
+
+
+==== type
+
+required: True
+
+Set to "apache-status" to indicate that the statistics are Apache HTTPD server-status.
+
+
+==== url
+
+required: True
+
+Remote Apache HTTPD server-status URL.
+
+
+==== beat.name
+
+Name of the Beat sending the events. If the shipper name is set in the configuration file, then that value is used. If it is not set, the hostname is used.
+
+
+==== beat.hostname
+
+The hostname as returned by the operating system on which the Beat is running.
+
+
+[[exported-fields-apache_status]]
+=== Apache HTTPD server-status metrics Fields
+
+Contains Apache HTTPD server-status statistics.
+
+
+
+=== apache Fields
+
+Contains Apache HTTPD server-status statistics.
+
+
+
+==== totalAccesses
+
+type: integer
+
+Total access since last restart of Apache HTTPD.
+
+
+==== totalKBytes
+
+type: long
+
+Total kbytes since last restart of Apache HTTPD.
+
+
+==== apache.reqPerSec
+
+type: float
+
+Average rate of requests per second since last restart of Apache HTTPD server.
+
+
+==== apache.bytesPerSec
+
+type: float
+
+Average rate of bytes per second since last restart of Apache HTTPD server.
+
+
+==== apache.bytesPerReq
+
+type: float
+
+Average rate of bytes per request since last restart of Apache HTTPD server.
+
+
+==== busyWorkers
+
+type: integer
+
+The number of worker serving requests.
+
+
+==== idleWorkers
+
+type: integer
+
+The number of idle worker.
+
+
+=== cpu Fields
+
+Contains cpu metrics.
+
+
+
+==== apache.cpu.cpuLoad
+
+type: float
+
+CPU load.
+
+
+==== apache.cpu.cpuUser
+
+type: float
+
+CPU User.
+
+
+==== apache.cpu.cpuSystem
+
+type: float
+
+CPU System.
+
+
+==== apache.cpu.cpuChildrenUser
+
+type: float
+
+CPU children user.
+
+
+==== apache.cpu.cpuChildrenSystem
+
+type: float
+
+CPU children system.
+
+
+=== uptime Fields
+
+Groups uptime metrics.
+
+
+
+==== apache.uptime.uptime
+
+type: integer
+
+Uptime of the Apache HTTPD server.
+
+
+==== apache.uptime.serverUptimeSeconds
+
+type: integer
+
+HTTPD Server uptime in seconds.
+
+
+=== connections Fields
+
+Groups connections metrics.
+
+
+
+==== apache.connections.connsTotal
+
+type: integer
+
+Total connections.
+
+
+==== apache.connections.connsAsyncWriting
+
+type: integer
+
+Total connections 'ConnsAsyncWriting'.
+
+
+==== apache.connections.connsAsyncKeepAlive
+
+type: integer
+
+Total connections 'ConnsAsyncKeepAlive'.
+
+
+==== apache.connections.connsAsyncClosing
+
+type: integer
+
+Total connections 'ConnsAsyncClosing'.
+
+
+=== load Fields
+
+Contains load metrics.
+
+
+
+==== apache.load.load1
+
+type: float
+
+Load 1.
+
+
+==== apache.load.load5
+
+type: float
+
+Load 5.
+
+
+==== apache.load.load15
+
+type: float
+
+Load 15.
+
+
+=== scoreboard Fields
+
+Contains scoreboard metrics.
+
+
+
+==== apache.scoreboard.startingUp
+
+type: integer
+
+Total workers 'Starting up'.
+
+
+==== apache.scoreboard.readingRequest
+
+type: integer
+
+Total workers 'Reading Request'.
+
+
+==== apache.scoreboard.sendingReply
+
+type: integer
+
+Total workers 'Sending Reply'.
+
+
+==== apache.scoreboard.keepalive
+
+type: integer
+
+Total workers 'Keepalive (read)'.
+
+
+==== apache.scoreboard.dnsLookup
+
+type: integer
+
+Total workers 'DNS Lookup'.
+
+
+==== apache.scoreboard.closingConnection
+
+type: integer
+
+Total workers 'Closing connection'.
+
+
+==== apache.scoreboard.logging
+
+type: integer
+
+Total workers 'Logging'.
+
+
+==== apache.scoreboard.gracefullyFinishing
+
+type: integer
+
+Total workers 'Gracefully finishing'.
+
+
+==== apache.scoreboard.idleCleanup
+
+type: integer
+
+Total workers 'Idle cleanup of worker'.
+
+
+==== apache.scoreboard.openSlot
+
+type: integer
+
+Total workers 'Open slot with no current process'.
+
+
+==== apache.scoreboard.waitingForConnection
+
+type: integer
+
+Total workers 'Waiting for Connection'.
+
+
+==== apache.scoreboard.total
+
+type: integer
+
+Total workers.
+
+

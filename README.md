@@ -9,47 +9,67 @@ This is beat for Apache HTTPD [server-status](https://httpd.apache.org/docs/2.4/
 Document example:
 ```json
 {
-  "_index": "apachebeat-2015.12.05",
-  "_type": "apache_status",
-  "_id": "AVFvpKJ21NqxaroAvAlC",
-  "_score": null,
-  "_source": {
-    "@timestamp": "2015-12-05T00:57:18.887Z",
-    "apache": {
-      "busy_workers": 184,
-      "bytes_per_req": "42878.3",
-      "bytes_per_sec": "5678720",
-      "conns_async_closing": 153,
-      "conns_async_keep_alive": 486,
-      "conns_async_writing": 18,
-      "conns_total": 841,
-      "cpu_load": "0.817271",
-      "host_url": "www.apache.org",
-      "idle_workers": 416,
-      "req_per_sec": "132.438",
-      "scb_closing_connection": 0,
-      "scb_dns_lookup": 0,
-      "scb_gracefully_finishing": 0,
-      "scb_idle_cleanup": 0,
-      "scb_keepalive": 0,
-      "scb_logging": 1,
-      "scb_open_slot": 3150,
-      "scb_reading_request": 62,
-      "scb_sending_reply": 121,
-      "scb_starting_up": 0,
-      "scb_waiting_for_connection": 416,
-      "total_access": 368347986,
-      "total_kbytes": 15423958662,
-      "uptime": 2781282
-    },
-    "beat": {
-      "hostname": "hostname",
-      "name": "hostname"
-    },
-    "count": 1,
-    "source": "http://www.apache.org/server-status?auto",
-    "type": "apache_status"
-  }
+    "_index": "apachebeat-2016.03.29",
+    "_type": "apache_status",
+    "_id": "AVPBdyRHD3Lkxnx3Btq7",
+    "_version": 1,
+    "_score": 1,
+    "_source": {
+        "@timestamp": "2016-03-29T08:22:04.102Z",
+        "apache": {
+            "busyWorkers": 263,
+            "bytesPerReq": 44679.9,
+            "bytesPerSec": 4895320,
+            "connections": {
+                "connsAsyncClosing": 612,
+                "connsAsyncKeepAlive": 1483,
+                "connsAsyncWriting": 475,
+                "connsTotal": 2839
+            },
+            "cpu": {
+                "cpuChildrenSystem": 0,
+                "cpuChildrenUser": 0,
+                "cpuLoad": 2.70362,
+                "cpuSystem": 0,
+                "cpuUser": 0
+            },
+            "hostname": "www.apache.org",
+            "idleWorkers": 637,
+            "load": {
+                "load1": 0,
+                "load15": 0,
+                "load5": 0
+            },
+            "reqPerSec": 109.564,
+            "scoreboard": {
+                "closingConnection": 0,
+                "dnsLookup": 0,
+                "gracefullyFinishing": 113,
+                "idleCleanup": 0,
+                "keepalive": 0,
+                "logging": 337,
+                "openSlot": 2400,
+                "readingRequest": 232,
+                "sendingReply": 31,
+                "startingUp": 0,
+                "total": 3750,
+                "waitingForConnection": 637
+            },
+            "totalAccesses": 141301656,
+            "totalKBytes": 6165381544,
+            "uptime": {
+                "serverUptimeSeconds": 0,
+                "uptime": 1289672
+            }
+        },
+        "beat": {
+            "hostname": "tsskkewks8445",
+            "name": "tsskkewks8445"
+        },
+        "type": "apache_status",
+        "url": "http://www.apache.org/server-status?auto"
+    }
+}
 ```
 
 More about beats platform: https://www.elastic.co/products/beats
@@ -61,7 +81,7 @@ curl -XPUT 'http://localhost:9200/_template/apachebeat' -d@apachebeat.template.j
 ```
 
 ## Example Kibana dashboard
-![Apache HTTPD server-status](/doc/images/apache-server-status.png)
+![Apache HTTPD server-status](/docs/images/apache-server-status.png)
 
 ## Links
 * [Simple Run guide](/RUN.md)

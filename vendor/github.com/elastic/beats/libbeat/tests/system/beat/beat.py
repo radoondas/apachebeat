@@ -11,6 +11,9 @@ import time
 import yaml
 from datetime import datetime, timedelta
 
+BEAT_REQUIRED_FIELDS = ["@timestamp", "type",
+                        "beat.name", "beat.hostname"]
+
 
 class Proc(object):
     """
@@ -203,7 +206,10 @@ class TestCase(unittest.TestCase):
         with open(os.path.join(self.working_dir, output), "wb") as f:
             f.write(output_str)
 
-    def read_output(self, output_file=None):
+    # Returns output as JSON object with flattened fields (. notation)
+    def read_output(self,
+                    output_file=None,
+                    required_fields=None):
 
         # Init defaults
         if output_file is None:
@@ -214,9 +220,20 @@ class TestCase(unittest.TestCase):
             for line in f:
                 jsons.append(self.flatten_object(json.loads(line),
                                                  []))
-        self.all_have_fields(jsons, ["@timestamp", "type",
-                                     "beat.name", "beat.hostname",
-                                     "count"])
+        self.all_have_fields(jsons, required_fields or BEAT_REQUIRED_FIELDS)
+        return jsons
+
+    # Returns output as JSON object
+    def read_output_json(self, output_file=None):
+
+        # Init defaults
+        if output_file is None:
+            output_file = "output/" + self.beat_name
+
+        jsons = []
+        with open(os.path.join(self.working_dir, output_file), "r") as f:
+            for line in f:
+                jsons.append(json.loads(line))
         return jsons
 
     def copy_files(self, files, source_dir="files/"):
@@ -270,6 +287,15 @@ class TestCase(unittest.TestCase):
         Note that the msg must be present in a single line.
         """
 
+        return self.log_contains_count(msg, logfile) > 0
+
+    def log_contains_count(self, msg, logfile=None):
+        """
+        Returns the number of appearances of the given string in the log file
+        """
+
+        counter = 0
+
         # Init defaults
         if logfile is None:
             logfile = self.beat_name + ".log"
@@ -278,10 +304,11 @@ class TestCase(unittest.TestCase):
             with open(os.path.join(self.working_dir, logfile), "r") as f:
                 for line in f:
                     if line.find(msg) >= 0:
-                        return True
-                return False
+                        counter = counter + 1
         except IOError:
-            return False
+            counter = -1
+
+        return counter
 
     def output_has(self, lines, output_file=None):
         """
@@ -338,18 +365,25 @@ class TestCase(unittest.TestCase):
 
         Reads these lists from the fields documentation.
         """
-        def extract_fields(doc_list):
+        def extract_fields(doc_list, name):
             fields = []
             dictfields = []
             for field in doc_list:
+
+                # Chain together names
+                if name != "":
+                    newName = name + "." + field["name"]
+                else:
+                    newName = field["name"]
+
                 if field.get("type") == "group":
-                    subfields, subdictfields = extract_fields(field["fields"])
+                    subfields, subdictfields = extract_fields(field["fields"], newName)
                     fields.extend(subfields)
                     dictfields.extend(subdictfields)
                 else:
-                    fields.append(field["name"])
+                    fields.append(newName)
                     if field.get("type") == "dict":
-                        dictfields.append(field["name"])
+                        dictfields.append(newName)
             return fields, dictfields
 
         with open(fields_doc, "r") as f:
@@ -359,7 +393,7 @@ class TestCase(unittest.TestCase):
             for key, value in doc.items():
                 if isinstance(value, dict) and \
                         value.get("type") == "group":
-                    subfields, subdictfields = extract_fields(value["fields"])
+                    subfields, subdictfields = extract_fields(value["fields"], "")
                     fields.extend(subfields)
                     dictfields.extend(subdictfields)
             return fields, dictfields
