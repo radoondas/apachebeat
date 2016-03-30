@@ -63,8 +63,8 @@ Document example:
             }
         },
         "beat": {
-            "hostname": "tsskkewks8445",
-            "name": "tsskkewks8445"
+            "hostname": "hostname",
+            "name": "name"
         },
         "type": "apache_status",
         "url": "http://www.apache.org/server-status?auto"
