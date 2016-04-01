@@ -6,9 +6,15 @@ input:
   # E.g. "http://127.0.0.1:8080/server-status?auto", "http://www.apache.org/server-status?auto"
   # Defaults to ["http://127.0.0.1:8080/server-status?auto"].
   urls:
- #   - http://127.0.0.1:8080/server-status?auto
+#    - http://127.0.0.1:8080/server-status?auto
     - http://www.apache.org/server-status?auto
 
   # In seconds, defines how often to read statistics.
   # Defaults to 10s.
   period: 10
+
+  # Authentication
+  #authentication:
+  #  username: test
+  #  password: test123
+
