@@ -3,11 +3,12 @@
 ############################# Input ############################################
 input:
   # List of URLs to Apache HTTPD server-status page.
-  # E.g. "http://127.0.0.1:8080/server-status?auto", "http://www.apache.org/server-status?auto"
-  # Defaults to ["http://127.0.0.1:8080/server-status?auto"].
+  # E.g. "http://127.0.0.1:8080/server-status", "http://www.apache.org/server-status"
+  # Defaults to ["http://127.0.0.1:8080/server-status"].
+  # Part of URI "?auto" is not required as it is appended by default
   urls:
-#    - http://127.0.0.1:8080/server-status?auto
-    - http://www.apache.org/server-status?auto
+#    - http://127.0.0.1:8080/server-status
+    - http://www.apache.org/server-status
 
   # In seconds, defines how often to read statistics.
   # Defaults to 10s.

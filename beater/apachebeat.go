@@ -12,6 +12,7 @@ import (
 )
 
 const selector = "apachebeat"
+const AUTO_STRING = "?auto"
 
 // ApacheBeat implements Beater interface and sends Apache HTTPD status using libbeat.
 type ApacheBeat struct {
@@ -47,7 +48,7 @@ func (ab *ApacheBeat) Config(b *beat.Beat) error {
 	if ab.AbConfig.Input.URLs != nil {
 		urlConfig = ab.AbConfig.Input.URLs
 	} else {
-		urlConfig = []string{"http://127.0.0.1/server-status?auto"}
+		urlConfig = []string{"http://127.0.0.1/server-status"}
 	}
 
 	ab.urls = make([]*url.URL, len(urlConfig))
