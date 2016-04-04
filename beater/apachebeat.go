@@ -6,9 +6,9 @@ import (
 
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/cfgfile"
+	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/libbeat/publisher"
-	"github.com/elastic/beats/libbeat/common"
 )
 
 const selector = "apachebeat"
@@ -21,6 +21,9 @@ type ApacheBeat struct {
 
 	AbConfig ConfigSettings
 	events   publisher.Client
+	auth     bool
+	username string
+	password string
 
 	done chan struct{}
 }
@@ -61,6 +64,20 @@ func (ab *ApacheBeat) Config(b *beat.Beat) error {
 		ab.period = time.Duration(*ab.AbConfig.Input.Period) * time.Second
 	} else {
 		ab.period = 10 * time.Second
+	}
+
+	if ab.AbConfig.Input.Authentication.Username == nil || ab.AbConfig.Input.Authentication.Password == nil {
+		logp.Err("Username or password is not set.")
+		ab.auth = false
+	} else if *ab.AbConfig.Input.Authentication.Username == "" || *ab.AbConfig.Input.Authentication.Password == "" {
+		logp.Err("Username or password is not set.")
+		ab.auth = false
+	} else {
+		ab.username = *ab.AbConfig.Input.Authentication.Username
+		ab.password = *ab.AbConfig.Input.Authentication.Password
+		ab.auth = true
+		logp.Debug(selector, "Username %v", ab.username)
+		logp.Debug(selector, "Password %v", ab.password)
 	}
 
 	logp.Debug(selector, "Init apachebeat")

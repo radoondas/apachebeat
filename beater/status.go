@@ -14,7 +14,14 @@ import (
 )
 
 func (ab *ApacheBeat) GetServerStatus(u url.URL) (common.MapStr, error) {
-	res, err := http.Get(u.String())
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", u.String(), nil)
+
+	if ab.auth {
+		req.SetBasicAuth(ab.username, ab.password)
+	}
+	res, err := client.Do(req)
+
 	if err != nil {
 		return nil, err
 	}
