@@ -1,3 +1,7 @@
+/*
+Package beater provides the implementation of the libbeat Beater interface for
+Winlogbeat. The main event loop is implemented in this package.
+*/
 package beater
 
 import (
@@ -5,14 +9,13 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"path/filepath"
 	"sync"
 	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
-	"github.com/elastic/beats/libbeat/cfgfile"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/libbeat/paths"
 	"github.com/elastic/beats/libbeat/publisher"
 	"github.com/elastic/beats/winlogbeat/checkpoint"
 	"github.com/elastic/beats/winlogbeat/config"
@@ -57,7 +60,7 @@ func New() *Winlogbeat {
 // Config sets up the necessary configuration to use the winlogbeat
 func (eb *Winlogbeat) Config(b *beat.Beat) error {
 	// Read configuration.
-	err := cfgfile.Read(&eb.config, "")
+	err := b.RawConfig.Unpack(&eb.config)
 	if err != nil {
 		return fmt.Errorf("Error reading configuration file. %v", err)
 	}
@@ -73,12 +76,7 @@ func (eb *Winlogbeat) Config(b *beat.Beat) error {
 	if eb.config.Winlogbeat.RegistryFile == "" {
 		eb.config.Winlogbeat.RegistryFile = config.DefaultRegistryFile
 	}
-	eb.config.Winlogbeat.RegistryFile, err = filepath.Abs(
-		eb.config.Winlogbeat.RegistryFile)
-	if err != nil {
-		return fmt.Errorf("Error getting absolute path of registry file %s. %v",
-			eb.config.Winlogbeat.RegistryFile, err)
-	}
+	eb.config.Winlogbeat.RegistryFile = paths.Resolve(paths.Data, eb.config.Winlogbeat.RegistryFile)
 	logp.Info("State will be read from and persisted to %s",
 		eb.config.Winlogbeat.RegistryFile)
 

@@ -13,6 +13,12 @@ metricbeat:
       # Path to server status. Default server-status
       #server_status_path: "server-status"
 
+      # Username of hosts.  Empty by default
+      #username: test
+
+      # Password of hosts. Empty by default
+      #password: test123
+
     # Redis Module
     - module: redis
       metricsets: ["info"]
@@ -43,8 +49,11 @@ metricbeat:
       #maxconn: 10
 
       #filter: ...
-      #username: name
-      #password: hello world
+
+      # Redis AUTH password. Empty by default.
+      #password: foobared
+
+    # MySQL Module
     - module: mysql
       metricsets: ["status"]
       enabled: true

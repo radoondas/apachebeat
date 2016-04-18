@@ -58,7 +58,11 @@ The following example configures Filebeat to drop any lines that start with "DBG
 
 [source,yaml]
 -------------------------------------------------------------------------------------
-exclude_lines: ["^DBG"]
+filebeat:
+  prospectors:
+    - paths:
+        - /var/log/myapp/*.log
+      exclude_lines: ["^DBG"]
 -------------------------------------------------------------------------------------
 
 [[include-lines]]
@@ -72,7 +76,11 @@ The following example configures Filebeat to export any lines that start with "E
 
 [source,yaml]
 -------------------------------------------------------------------------------------
-include_lines: ["^ERR", "^WARN"]
+filebeat:
+  prospectors:
+    - paths:
+        - /var/log/myapp/*.log
+      include_lines: ["^ERR", "^WARN"]
 -------------------------------------------------------------------------------------
 
 NOTE: If both `include_lines` and `exclude_lines` are defined, Filebeat executes `include_lines` first and then executes `exclude_lines`. So, for example, to export all Apache log lines except the debugging messages (DBGs), you can use:
@@ -83,6 +91,7 @@ NOTE: If both `include_lines` and `exclude_lines` are defined, Filebeat executes
  exclude_lines: ["^DBG"]
 -------------------------------------------------------------------------------------
 
+[[exclude-files]]
 ===== exclude_files
 
 A list of regular expressions to match the files that you want Filebeat to ignore. By default no files are excluded.
@@ -184,7 +193,7 @@ document. The default value is `log`.
 
 ===== harvester_buffer_size
 
-The buffer size every harvester uses when fetching the file. The default is 16384.
+The size in bytes of the buffer that each harvester uses when fetching a file. The default is 16384.
 
 ===== max_bytes
 
@@ -340,7 +349,7 @@ lines. The `backoff` value will be multiplied each time with the `backoff_factor
 
 ===== force_close_files
 
-By default, Filebeat keeps the files that it’s reading open until the timespan specified by `ignore_older` has elapsed.
+By default, Filebeat keeps the files that it’s reading open until the timespan specified by `close_older` has elapsed.
 This behaviour can cause issues when a file is removed. On Windows, the file cannot be fully removed until Filebeat closes
 the file. In addition no new file with the same name can be created during this time.
 
@@ -350,8 +359,8 @@ rotated files in case not all lines were read from the rotated file.
 
 ===== spool_size
 
-The event count spool threshold. This setting forces a network flush if the specified
-value is exceeded.
+The event count spool threshold. This setting forces a network flush if the number of events in the spooler exceeds
+the specified value.
 
 [source,yaml]
 -------------------------------------------------------------------------------------
@@ -381,13 +390,13 @@ filebeat:
 
 ===== registry_file
 
-The name of the registry file. By default, the registry file is put in the current
-working directory. If the working directory changes for subsequent runs of Filebeat, indexing starts from the beginning again.
+The name of the registry file. If a relative path is used, it is considered relative to the
+data path. The default is `registry`.
 
 [source,yaml]
 -------------------------------------------------------------------------------------
 filebeat:
-  registry_file: .filebeat
+  registry_file: registry
 -------------------------------------------------------------------------------------
 
 
@@ -425,4 +434,6 @@ include::../../../../libbeat/docs/shipperconfig.asciidoc[]
 include::../../../../libbeat/docs/loggingconfig.asciidoc[]
 
 include::../../../../libbeat/docs/runconfig.asciidoc[]
+
+include::../../../../libbeat/docs/filteringconfig.asciidoc[]
 

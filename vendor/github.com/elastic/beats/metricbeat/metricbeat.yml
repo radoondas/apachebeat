@@ -13,6 +13,12 @@ metricbeat:
       # Path to server status. Default server-status
       #server_status_path: "server-status"
 
+      # Username of hosts.  Empty by default
+      #username: test
+
+      # Password of hosts. Empty by default
+      #password: test123
+
     # Redis Module
     - module: redis
       metricsets: ["info"]
@@ -43,8 +49,11 @@ metricbeat:
       #maxconn: 10
 
       #filter: ...
-      #username: name
-      #password: hello world
+
+      # Redis AUTH password. Empty by default.
+      #password: foobared
+
+    # MySQL Module
     - module: mysql
       metricsets: ["status"]
       enabled: true
@@ -95,18 +104,18 @@ output:
     #index: "metricbeat"
 
     # A template is used to set the mapping in Elasticsearch
-    # By default template loading is disabled and no template is loaded.
+    # By default template loading is enabled and the template is loaded.
     # These settings can be adjusted to load your own template or overwrite existing ones
-    #template:
+    template:
 
       # Template name. By default the template name is metricbeat.
-      #name: "metricbeat"
+      name: "metricbeat"
 
       # Path to template file
-      #path: "metricbeat.template.json"
+      path: "metricbeat.template.json"
 
       # Overwrite existing template
-      #overwrite: false
+      overwrite: false
 
     # Optional HTTP Path
     #path: "/elasticsearch"

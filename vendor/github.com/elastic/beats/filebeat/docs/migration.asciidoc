@@ -41,7 +41,7 @@ The registry file stores the state and location information that Filebeat uses t
 where it was last reading. Under Logstash Forwarder, this file was called `.logstash-fowarder`. For Filebeat,
 the file was renamed. The name varies depending on the package type:
 
- * `.filebeat` for `.tar.gz` and `.tgz` archives
+ * `data/registry` for `.tar.gz` and `.tgz` archives
  * `/var/lib/filebeat/registry` for DEB and RPM packages
  * `c:\ProgramData\filebeat\registry` for the Windows zip file
 
@@ -72,9 +72,6 @@ conversion to create a Filebeat config file for each Logstash Forwarder config f
 
 Before migrating your config files, we recommend that you first read the <<filebeat-configuration-details>>
 section to understand the Filebeat options.
-
-NOTE: Logstash Forwarder has the option of autocompleting environment variables in
-the configuration file. This option currently doesn't exist in Filebeat.
 
 [float]
 === Migrating the "files" Section
@@ -429,7 +426,7 @@ with the new packages.
 One notable change is the name of the registry file. The name varies depending on the package
 type:
 
- * `.filebeat` for `.tar.gz` and `.tgz` archives
+ * `registry` for `.tar.gz` and `.tgz` archives
  * `/usr/lib/filebeat/registry` for DEB and RPM packages
  * `c:\ProgramData\filebeat\registry` for the Windows zip file
 
