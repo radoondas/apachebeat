@@ -89,9 +89,8 @@ func (ab *ApacheBeat) Config(b *beat.Beat) error {
 }
 
 func (ab *ApacheBeat) Setup(b *beat.Beat) error {
-	ab.events = b.Events
+	ab.events = b.Publisher.Connect()
 	ab.done = make(chan struct{})
-
 	return nil
 }
 
