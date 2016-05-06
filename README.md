@@ -1,4 +1,5 @@
 [![Travis Build Status](https://travis-ci.org/radoondas/apachebeat.svg?branch=master)](https://travis-ci.org/radoondas/apachebeat)
+[![GoReportCard](https://goreportcard.com/badge/github.com/radoondas/apachebeat)](https://goreportcard.com/report/github.com/radoondas/apachebeat)
 
 # ApacheBeat
 Current status: **beta release**.
