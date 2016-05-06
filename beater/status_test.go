@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"net/url"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/elastic/beats/libbeat/common"
+	"github.com/stretchr/testify/assert"
 )
 
 // Apache status example:

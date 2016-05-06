@@ -15,7 +15,7 @@ import (
 
 func (ab *ApacheBeat) GetServerStatus(u url.URL) (common.MapStr, error) {
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", u.String() + AUTO_STRING, nil)
+	req, err := http.NewRequest("GET", u.String()+AUTO_STRING, nil)
 
 	if ab.auth {
 		req.SetBasicAuth(ab.username, ab.password)
