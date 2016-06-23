@@ -118,7 +118,7 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 				if error != nil {
 					logp.Err("Error getting server-status for %s: %v", u.String(), error)
 				} else {
-					logp.Debug(selector, "Apache  detail: %+v", serverStatus)
+					logp.Debug(selector, "Apache  detailfor %s : %+v", u.String(), serverStatus)
 
 					event := common.MapStr{
 						"@timestamp": common.Time(time.Now()),
@@ -127,6 +127,7 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 						"apache":     serverStatus, //TODO: NAMING??
 					}
 
+					logp.Debug(selector, "Server status event detail for %s: %v", u.String(), event)
 					ab.events.PublishEvent(event)
 				}
 

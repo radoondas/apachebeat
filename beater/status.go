@@ -13,7 +13,29 @@ import (
 	"github.com/elastic/beats/libbeat/logp"
 )
 
+var (
+	scoreboardRegexp = regexp.MustCompile("(Scoreboard):\\s+((_|S|R|W|K|D|C|L|G|I|\\.)+)")
+
+	// This should match: "CPUSystem: .01"
+	matchNumber = regexp.MustCompile("(^[0-9a-zA-Z ]+):\\s+(\\d*\\.?\\d+)")
+)
+
 func (ab *ApacheBeat) GetServerStatus(u url.URL) (common.MapStr, error) {
+	var (
+		totalS          int
+		totalR          int
+		totalW          int
+		totalK          int
+		totalD          int
+		totalC          int
+		totalL          int
+		totalG          int
+		totalI          int
+		totalDot        int
+		totalUnderscore int
+		totalAll        int
+	)
+
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", u.String()+AUTO_STRING, nil)
 
@@ -31,259 +53,96 @@ func (ab *ApacheBeat) GetServerStatus(u url.URL) (common.MapStr, error) {
 		return nil, fmt.Errorf("HTTP%s", res.Status)
 	}
 
-	// Apache status example:
-	// Total Accesses: 16147
-	// Total kBytes: 12988i
-	// CPULoad: .000408393
-	// Uptime: 3229728
-	// ReqPerSec: .00499949
-	// BytesPerSec: 4.1179
-	// BytesPerReq: 823.665
-	// BusyWorkers: 1
-	// IdleWorkers: 8
-	// ConnsTotal: 4940
-	// ConnsAsyncWriting: 527
-	// ConnsAsyncKeepAlive: 1321
-	// ConnsAsyncClosing: 2785
-	// ServerUptimeSeconds: 43
-	// Load1: 0.01
-	// Load5: 0.10
-	// Load15: 0.06
-	// CPUUser: 0
-	// CPUSystem: .01
-	// CPUChildrenUser: 0
-	// CPUChildrenSystem: 0
-
-	var re *regexp.Regexp
-	scanner := bufio.NewScanner(res.Body)
-
-	// apachebeat - while we have something to read
-	// default values for type int is 0
-	var (
-		hostname            string
-		totalAccesses       int
-		totalKBytes         int
-		uptime              int
-		cpuLoad             float64
-		cpuUser             float64
-		cpuSystem           float64
-		cpuChildrenUser     float64
-		cpuChildrenSystem   float64
-		reqPerSec           float64
-		bytesPerSec         float64
-		bytesPerReq         float64
-		busyWorkers         int
-		idleWorkers         int
-		connsTotal          int
-		connsAsyncWriting   int
-		connsAsyncKeepAlive int
-		connsAsyncClosing   int
-		serverUptimeSeconds int
-		load1               float64
-		load5               float64
-		load15              float64
-		totalS              int
-		totalR              int
-		totalW              int
-		totalK              int
-		totalD              int
-		totalC              int
-		totalL              int
-		totalG              int
-		totalI              int
-		totalDot            int
-		totalUnderscore     int
-		totalAll            int
-	)
-
 	//set hostname from url
-	hostname = u.Host
+	hostname := u.Host
 	logp.Debug(selector, "URL Hostname: %v", hostname)
 
+	fullEvent := common.MapStr{}
+	scanner := bufio.NewScanner(res.Body)
+
+	// Iterate through all events to gather data
 	for scanner.Scan() {
-		logp.Debug(selector, "%v: Reading from body: %v", hostname, scanner.Text())
+		if match := matchNumber.FindStringSubmatch(scanner.Text()); len(match) == 3 {
+			// Total Accesses: 16147
+			//Total kBytes: 12988
+			// Uptime: 3229728
+			// CPULoad: .000408393
+			// CPUUser: 0
+			// CPUSystem: .01
+			// CPUChildrenUser: 0
+			// CPUChildrenSystem: 0
+			// ReqPerSec: .00499949
+			// BytesPerSec: 4.1179
+			// BytesPerReq: 823.665
+			// BusyWorkers: 1
+			// IdleWorkers: 8
+			// ConnsTotal: 4940
+			// ConnsAsyncWriting: 527
+			// ConnsAsyncKeepAlive: 1321
+			// ConnsAsyncClosing: 2785
+			// ServerUptimeSeconds: 43
+			//Load1: 0.01
+			//Load5: 0.10
+			//Load15: 0.06
+			fullEvent[match[1]] = match[2]
 
-		// Total Accesses: 16147
-		re = regexp.MustCompile("Total Accesses: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			totalAccesses, _ = strconv.Atoi(matches[1])
-		}
+		} else if match := scoreboardRegexp.FindStringSubmatch(scanner.Text()); len(match) == 4 {
+			// Scoreboard Key:
+			// "_" Waiting for Connection, "S" Starting up, "R" Reading Request,
+			// "W" Sending Reply, "K" Keepalive (read), "D" DNS Lookup,
+			// "C" Closing connection, "L" Logging, "G" Gracefully finishing,
+			// "I" Idle cleanup of worker, "." Open slot with no current process
+			// Scoreboard: _W____........___...............................................................................................................................................................................................................................................
 
-		//Total kBytes: 12988
-		re = regexp.MustCompile("Total kBytes: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			totalKBytes, _ = strconv.Atoi(matches[1])
-		}
-
-		// Uptime: 3229728
-		re = regexp.MustCompile("Uptime: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			uptime, _ = strconv.Atoi(matches[1])
-		}
-
-		// CPULoad: .000408393
-		re = regexp.MustCompile("CPULoad: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			cpuLoad = parseMatchFloat(matches[1], hostname, "cpuLoad")
-		}
-
-		// CPUUser: 0
-		re = regexp.MustCompile("CPUUser: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			cpuUser = parseMatchFloat(matches[1], hostname, "cpuUser")
-		}
-
-		// CPUSystem: .01
-		re = regexp.MustCompile("CPUSystem: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			cpuSystem = parseMatchFloat(matches[1], hostname, "cpuSystem")
-		}
-
-		// CPUChildrenUser: 0
-		re = regexp.MustCompile("CPUChildrenUser: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			cpuChildrenUser = parseMatchFloat(matches[1], hostname, "cpuChildrenUser")
-		}
-
-		// CPUChildrenSystem: 0
-		re = regexp.MustCompile("CPUChildrenSystem: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			cpuChildrenSystem = parseMatchFloat(matches[1], hostname, "cpuChildrenSystem")
-		}
-
-		// ReqPerSec: .00499949
-		re = regexp.MustCompile("ReqPerSec: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			reqPerSec = parseMatchFloat(matches[1], hostname, "reqPerSec")
-		}
-
-		// BytesPerSec: 4.1179
-		re = regexp.MustCompile("BytesPerSec: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			bytesPerSec = parseMatchFloat(matches[1], hostname, "bytesPerSec")
-		}
-
-		// BytesPerReq: 823.665
-		re = regexp.MustCompile("BytesPerReq: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			bytesPerReq = parseMatchFloat(matches[1], hostname, "bytesPerReq")
-		}
-
-		// BusyWorkers: 1
-		re = regexp.MustCompile("BusyWorkers: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			busyWorkers, _ = strconv.Atoi(matches[1])
-		}
-
-		// IdleWorkers: 8
-		re = regexp.MustCompile("IdleWorkers: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			idleWorkers, _ = strconv.Atoi(matches[1])
-		}
-
-		// ConnsTotal: 4940
-		re = regexp.MustCompile("ConnsTotal: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			connsTotal, _ = strconv.Atoi(matches[1])
-		}
-
-		// ConnsAsyncWriting: 527
-		re = regexp.MustCompile("ConnsAsyncWriting: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			connsAsyncWriting, _ = strconv.Atoi(matches[1])
-		}
-
-		// ConnsAsyncKeepAlive: 1321
-		re = regexp.MustCompile("ConnsAsyncKeepAlive: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			connsAsyncKeepAlive, _ = strconv.Atoi(matches[1])
-		}
-
-		// ConnsAsyncClosing: 2785
-		re = regexp.MustCompile("ConnsAsyncClosing: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			connsAsyncClosing, _ = strconv.Atoi(matches[1])
-		}
-
-		// ServerUptimeSeconds: 43
-		re = regexp.MustCompile("ServerUptimeSeconds: (\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			serverUptimeSeconds, _ = strconv.Atoi(matches[1])
-		}
-
-		//Load1: 0.01
-		re = regexp.MustCompile("Load1: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			load1 = parseMatchFloat(matches[1], hostname, "load1")
-		}
-
-		//Load5: 0.10
-		re = regexp.MustCompile("Load5: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			load5 = parseMatchFloat(matches[1], hostname, "load5")
-		}
-
-		//Load15: 0.06
-		re = regexp.MustCompile("Load15: (\\d*.*\\d+)")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			load15 = parseMatchFloat(matches[1], hostname, "load15")
-		}
-
-		// Scoreboard Key:
-		// "_" Waiting for Connection, "S" Starting up, "R" Reading Request,
-		// "W" Sending Reply, "K" Keepalive (read), "D" DNS Lookup,
-		// "C" Closing connection, "L" Logging, "G" Gracefully finishing,
-		// "I" Idle cleanup of worker, "." Open slot with no current process
-		// Scoreboard: _W____........___...............................................................................................................................................................................................................................................
-		re = regexp.MustCompile("Scoreboard: (_|S|R|W|K|D|C|L|G|I|\\.)+")
-		if matches := re.FindStringSubmatch(scanner.Text()); matches != nil {
-			scr := strings.Split(scanner.Text(), " ")
-
-			totalUnderscore = strings.Count(scr[1], "_")
-			totalS = strings.Count(scr[1], "S")
-			totalR = strings.Count(scr[1], "R")
-			totalW = strings.Count(scr[1], "W")
-			totalK = strings.Count(scr[1], "K")
-			totalD = strings.Count(scr[1], "D")
-			totalC = strings.Count(scr[1], "C")
-			totalL = strings.Count(scr[1], "L")
-			totalG = strings.Count(scr[1], "G")
-			totalI = strings.Count(scr[1], "I")
-			totalDot = strings.Count(scr[1], ".")
+			totalUnderscore = strings.Count(match[2], "_")
+			totalS = strings.Count(match[2], "S")
+			totalR = strings.Count(match[2], "R")
+			totalW = strings.Count(match[2], "W")
+			totalK = strings.Count(match[2], "K")
+			totalD = strings.Count(match[2], "D")
+			totalC = strings.Count(match[2], "C")
+			totalL = strings.Count(match[2], "L")
+			totalG = strings.Count(match[2], "G")
+			totalI = strings.Count(match[2], "I")
+			totalDot = strings.Count(match[2], ".")
 			totalAll = totalUnderscore + totalS + totalR + totalW + totalK + totalD + totalC + totalL + totalG + totalI + totalDot
+
+		} else {
+
+			logp.Debug("Unexpected line in apache server-status output: %s", scanner.Text())
 		}
 	}
 
 	event := common.MapStr{
 		"hostname":      hostname,
-		"totalAccesses": totalAccesses,
-		"totalKBytes":   totalKBytes,
-		"reqPerSec":     reqPerSec,
-		"bytesPerSec":   bytesPerSec,
-		"bytesPerReq":   bytesPerReq,
-		"busyWorkers":   busyWorkers,
-		"idleWorkers":   idleWorkers,
+		"totalAccesses": toInt(fullEvent["Total Accesses"]),
+		"totalKBytes":   toInt(fullEvent["Total kBytes"]),
+		"reqPerSec":     parseMatchFloat(fullEvent["ReqPerSec"], hostname, "ReqPerSec"),
+		"bytesPerSec":   parseMatchFloat(fullEvent["BytesPerSec"], hostname, "BytesPerSec"),
+		"bytesPerReq":   parseMatchFloat(fullEvent["BytesPerReq"], hostname, "BytesPerReq"),
+		"busyWorkers":   toInt(fullEvent["BusyWorkers"]),
+		"idleWorkers":   toInt(fullEvent["IdleWorkers"]),
 		"uptime": common.MapStr{
-			"serverUptimeSeconds": serverUptimeSeconds,
-			"uptime":              uptime,
+			"serverUptimeSeconds": toInt(fullEvent["ServerUptimeSeconds"]),
+			"uptime":              toInt(fullEvent["Uptime"]),
 		},
 		"cpu": common.MapStr{
-			"cpuLoad":           cpuLoad,
-			"cpuUser":           cpuUser,
-			"cpuSystem":         cpuSystem,
-			"cpuChildrenUser":   cpuChildrenUser,
-			"cpuChildrenSystem": cpuChildrenSystem,
+			"cpuLoad":           parseMatchFloat(fullEvent["CPULoad"], hostname, "CPULoad"),
+			"cpuUser":           parseMatchFloat(fullEvent["CPUUser"], hostname, "CPUUser"),
+			"cpuSystem":         parseMatchFloat(fullEvent["CPUSystem"], hostname, "CPUSystem"),
+			"cpuChildrenUser":   parseMatchFloat(fullEvent["CPUChildrenUser"], hostname, "CPUChildrenUser"),
+			"cpuChildrenSystem": parseMatchFloat(fullEvent["CPUChildrenSystem"], hostname, "CPUChildrenSystem"),
 		},
 		"connections": common.MapStr{
-			"connsTotal":          connsTotal,
-			"connsAsyncWriting":   connsAsyncWriting,
-			"connsAsyncKeepAlive": connsAsyncKeepAlive,
-			"connsAsyncClosing":   connsAsyncClosing,
+			"connsTotal":          toInt(fullEvent["ConnsTotal"]),
+			"connsAsyncWriting":   toInt(fullEvent["ConnsAsyncWriting"]),
+			"connsAsyncKeepAlive": toInt(fullEvent["ConnsAsyncKeepAlive"]),
+			"connsAsyncClosing":   toInt(fullEvent["ConnsAsyncClosing"]),
 		},
 		"load": common.MapStr{
-			"load1":  load1,
-			"load5":  load5,
-			"load15": load15,
+			"load1":  parseMatchFloat(fullEvent["Load1"], hostname, "Load1"),
+			"load5":  parseMatchFloat(fullEvent["Load5"], hostname, "Load5"),
+			"load15": parseMatchFloat(fullEvent["Load15"], hostname, "Load15"),
 		},
 		"scoreboard": common.MapStr{
 			"startingUp":           totalS,
@@ -304,19 +163,40 @@ func (ab *ApacheBeat) GetServerStatus(u url.URL) (common.MapStr, error) {
 	return event, nil
 }
 
-func parseMatchFloat(inputString, hostname, fieldName string) float64 {
+func parseMatchFloat(input interface{}, hostname, fieldName string) float64 {
 	var parseString string
-	if strings.HasPrefix(inputString, ".") {
-		parseString = strings.Replace(inputString, ".", "0.", 1)
-	} else {
-		parseString = inputString
-	}
-	outputFloat, er := strconv.ParseFloat(parseString, 64)
 
-	/* Do we need to log failure? */
-	if er != nil {
-		logp.Warn("Host: %s - cannot parse string %s: %s to float.", hostname, fieldName, inputString)
+	if input != nil {
+		if strings.HasPrefix(input.(string), ".") {
+			parseString = strings.Replace(input.(string), ".", "0.", 1)
+		} else {
+			parseString = input.(string)
+		}
+		outputFloat, er := strconv.ParseFloat(parseString, 64)
+
+		/* Do we need to log failure? */
+		if er != nil {
+			logp.Debug("Host: %s - cannot parse string %s: %s to float.", hostname, fieldName, input)
+			return 0.0
+		}
+		return outputFloat
+	} else {
 		return 0.0
 	}
-	return outputFloat
+}
+
+// toInt converts value to int. In case of error, returns 0
+func toInt(param interface{}) int {
+	if param == nil {
+		return 0
+	}
+
+	value, err := strconv.Atoi(param.(string))
+
+	if err != nil {
+		logp.Err("Error converting param to int: %s", param)
+		value = 0
+	}
+
+	return value
 }

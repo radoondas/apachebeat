@@ -131,13 +131,9 @@ The number of workers per configured host publishing events to Elasticsearch. Th
 is best used with load balancing mode enabled. Example: If you have 2 hosts and
 3 workers, in total 6 workers are started (3 for each host).
 
-===== host (DEPRECATED)
+===== port
 
-The host of the Elasticsearch server. This option is deprecated because it is replaced by <<hosts-option>>.
-
-===== port (DEPRECATED)
-
-The port of the Elasticsearch server. This option is deprecated because it is replaced by <<hosts-option>>.
+The default port of the Elasticsearch server if the port number is missing in <<hosts-option>> URL. The default port number is 9200.
 
 ===== username
 
@@ -192,7 +188,7 @@ You can adjust the following settings to load your own template or overwrite an 
 *`name`*:: The name of the template. The default is +{beatname_lc}+.
 
 *`path`*:: The path to the template file. The default is +{beatname_lc}.template.json+. If a relative
-path is set, it is considered relative to the config path, see the <<directory-layout>> section for
+path is set, it is considered relative to the config path. See the <<directory-layout>> section for
 details.
 
 *`overwrite`*:: A boolean that specifies whether to overwrite the existing template. The default
