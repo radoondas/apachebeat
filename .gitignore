@@ -1,18 +1,19 @@
+# Editor swap files
+*.swp
+*.swo
+*.swn
+
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
 *.so
-
-# Folders
-_obj
-_test
-
 *.exe
 *.test
 *.prof
+*.pyc
 
-# Golang 1.5+ vendor folder
-#vendor/
+# Folders
+/build/
 
 # build
 apachebeat
