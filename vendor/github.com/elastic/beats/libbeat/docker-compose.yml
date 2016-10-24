@@ -32,7 +32,7 @@ logstash:
     - ${PWD}/build/test.env
 
 redis:
-  image: redis:3.0.7
+  image: redis:3.2.0
 
 # This host name is fixed because of the certificate
 sredis: # stunnel proxy for redis
@@ -52,3 +52,8 @@ kafka:
   expose:
     - 9092
     - 2181
+
+# Overloading kibana with a simple image as it is not needed here
+kibana:
+  build: ${PWD}/../testing/environments/
+  dockerfile: Dockerfile

@@ -63,6 +63,7 @@ func (m MapStr) Delete(key string) error {
 	keysLen := len(keyParts)
 
 	mapp := m
+
 	for i := 0; i < keysLen-1; i++ {
 		keyPart := keyParts[i]
 
@@ -75,8 +76,11 @@ func (m MapStr) Delete(key string) error {
 			return fmt.Errorf("unknown key %s", keyPart)
 		}
 	}
-	delete(mapp, keyParts[keysLen-1])
-	return nil
+	if _, ok := mapp[keyParts[keysLen-1]]; ok {
+		delete(mapp, keyParts[keysLen-1])
+		return nil
+	}
+	return fmt.Errorf("unknown key %s", keyParts[keysLen-1])
 }
 
 func (m MapStr) CopyFieldsTo(to MapStr, key string) error {
@@ -152,6 +156,29 @@ func (m MapStr) HasKey(key string) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func (m MapStr) GetValue(key string) (interface{}, error) {
+
+	keyParts := strings.Split(key, ".")
+	keyPartsLen := len(keyParts)
+
+	mapp := m
+	for i := 0; i < keyPartsLen; i++ {
+		keyPart := keyParts[i]
+
+		if _, ok := mapp[keyPart]; ok {
+			if i < keyPartsLen-1 {
+				mapp, ok = mapp[keyPart].(MapStr)
+				if !ok {
+					return nil, fmt.Errorf("Unknown type of %s key", keyPart)
+				}
+			}
+		} else {
+			return nil, fmt.Errorf("Missing %s key", keyPart)
+		}
+	}
+	return mapp[keyParts[keyPartsLen-1]], nil
 }
 
 func (m MapStr) StringToPrint() string {

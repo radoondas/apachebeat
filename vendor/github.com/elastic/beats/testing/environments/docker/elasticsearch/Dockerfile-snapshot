@@ -1,5 +1,13 @@
 FROM java:8-jre
 
+ENV ELASTICSEARCH_MAJOR 5.0
+ENV ELASTICSEARCH_VERSION 5.0
+ENV VERSION 5.0.0-rc1
+ENV FILENAME_VERSION 5.0.0-rc1
+ENV URL http://staging.elastic.co/5.0.0-rc1-d6c0877a/downloads/elasticsearch/elasticsearch-5.0.0-rc1.tar.gz
+
+ENV ESHOME /opt/elasticsearch-${FILENAME_VERSION}
+
 # grab gosu for easy step-down from root
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
 RUN arch="$(dpkg --print-architecture)" \
@@ -10,35 +18,22 @@ RUN arch="$(dpkg --print-architecture)" \
 	&& rm /usr/local/bin/gosu.asc \
 	&& chmod +x /usr/local/bin/gosu
 
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 46095ACC8548582C1A2699A9D27D666CD88E42B4
+RUN groupadd -r elasticsearch && useradd -r -m -g elasticsearch elasticsearch
 
-ENV ELASTICSEARCH_MAJOR 5.0
-ENV ELASTICSEARCH_VERSION master
+RUN set -x && \
+	cd /opt && \
+	wget -qO elasticsearch.tar.gz "$URL?t=$(date +%F)" && \
+	tar xzvf elasticsearch.tar.gz && \
+	chown -R elasticsearch:elasticsearch ${ESHOME}
 
-# Currently the same as alpha1 as no .deb snapshots available
-RUN wget -qO ./elasticsearch.deb http://download.elastic.co/elasticsearch/staging/5.0.0-alpha1-7d4ed5b/org/elasticsearch/distribution/deb/elasticsearch/5.0.0-alpha1/elasticsearch-5.0.0-alpha1.deb
+ENV PATH ${ESHOME}/bin:$PATH
 
-RUN dpkg -i elasticsearch.deb
+VOLUME ${ESHOME}/data
 
-ENV PATH /usr/share/elasticsearch/bin:$PATH
-
-RUN set -ex \
-	&& for path in \
-		/usr/share/elasticsearch/data \
-		/usr/share/elasticsearch/logs \
-		/usr/share/elasticsearch/config \
-		/usr/share/elasticsearch/config/scripts \
-	; do \
-		mkdir -p "$path"; \
-		chown -R elasticsearch:elasticsearch "$path"; \
-	done
-
-COPY config /usr/share/elasticsearch/config
-
-VOLUME /usr/share/elasticsearch/data
+ENV ES_JAVA_OPTS="-Xms512m -Xmx512m"
 
 # Shield currently not enabled
-#RUN elasticsearch-plugin install -Des.plugins.staging=true x-pack
+#ES_JAVA_OPTS="-Des.plugins.staging=b0da471" elasticsearch-plugin install x-pack
 
 COPY docker-entrypoint.sh /
 
