@@ -40,7 +40,7 @@ func (ab *ApacheBeat) GetServerStatus(u url.URL) (common.MapStr, error) {
 	req, err := http.NewRequest("GET", u.String()+AUTO_STRING, nil)
 
 	if ab.auth {
-		req.SetBasicAuth(ab.username, ab.password)
+		req.SetBasicAuth(ab.config.Authentication.Username, ab.config.Authentication.Password)
 	}
 	res, err := client.Do(req)
 

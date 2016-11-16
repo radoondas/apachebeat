@@ -1,0 +1,183 @@
+{
+  "mappings": {
+    "_default_": {
+      "_all": {
+        "norms": {
+          "enabled": false
+        }
+      },
+      "_meta": {
+        "version": "5.0.1"
+      },
+      "dynamic_templates": [
+        {
+          "strings_as_keyword": {
+            "mapping": {
+              "ignore_above": 1024,
+              "index": "not_analyzed",
+              "type": "string"
+            },
+            "match_mapping_type": "string"
+          }
+        }
+      ],
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "apache": {
+          "properties": {
+            "busyWorkers": {
+              "type": "long"
+            },
+            "bytesPerReq": {
+              "type": "float"
+            },
+            "bytesPerSec": {
+              "type": "float"
+            },
+            "connections": {
+              "properties": {
+                "connsAsyncClosing": {
+                  "type": "long"
+                },
+                "connsAsyncKeepAlive": {
+                  "type": "long"
+                },
+                "connsAsyncWriting": {
+                  "type": "long"
+                },
+                "connsTotal": {
+                  "type": "long"
+                }
+              }
+            },
+            "cpu": {
+              "properties": {
+                "cpuChildrenSystem": {
+                  "type": "float"
+                },
+                "cpuChildrenUser": {
+                  "type": "float"
+                },
+                "cpuLoad": {
+                  "type": "float"
+                },
+                "cpuSystem": {
+                  "type": "float"
+                },
+                "cpuUser": {
+                  "type": "float"
+                }
+              }
+            },
+            "idleWorkers": {
+              "type": "long"
+            },
+            "load": {
+              "properties": {
+                "load1": {
+                  "type": "float"
+                },
+                "load15": {
+                  "type": "float"
+                },
+                "load5": {
+                  "type": "float"
+                }
+              }
+            },
+            "reqPerSec": {
+              "type": "float"
+            },
+            "scoreboard": {
+              "properties": {
+                "closingConnection": {
+                  "type": "long"
+                },
+                "dnsLookup": {
+                  "type": "long"
+                },
+                "gracefullyFinishing": {
+                  "type": "long"
+                },
+                "idleCleanup": {
+                  "type": "long"
+                },
+                "keepalive": {
+                  "type": "long"
+                },
+                "logging": {
+                  "type": "long"
+                },
+                "openSlot": {
+                  "type": "long"
+                },
+                "readingRequest": {
+                  "type": "long"
+                },
+                "sendingReply": {
+                  "type": "long"
+                },
+                "startingUp": {
+                  "type": "long"
+                },
+                "total": {
+                  "type": "long"
+                },
+                "waitingForConnection": {
+                  "type": "long"
+                }
+              }
+            },
+            "totalAccesses": {
+              "type": "long"
+            },
+            "totalKBytes": {
+              "type": "long"
+            },
+            "uptime": {
+              "properties": {
+                "serverUptimeSeconds": {
+                  "type": "long"
+                },
+                "uptime": {
+                  "type": "long"
+                }
+              }
+            }
+          }
+        },
+        "beat": {
+          "properties": {
+            "hostname": {
+              "ignore_above": 1024,
+              "index": "not_analyzed",
+              "type": "string"
+            },
+            "name": {
+              "ignore_above": 1024,
+              "index": "not_analyzed",
+              "type": "string"
+            },
+            "version": {
+              "ignore_above": 1024,
+              "index": "not_analyzed",
+              "type": "string"
+            }
+          }
+        },
+        "tags": {
+          "ignore_above": 1024,
+          "index": "not_analyzed",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "order": 0,
+  "settings": {
+    "index.refresh_interval": "5s"
+  },
+  "template": "apachebeat-*"
+}

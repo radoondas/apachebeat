@@ -2,21 +2,19 @@
   "mappings": {
     "_default_": {
       "_all": {
-        "enabled": true,
-        "norms": {
-          "enabled": false
-        }
+        "norms": false
+      },
+      "_meta": {
+        "version": "5.0.1"
       },
       "dynamic_templates": [
         {
-          "template1": {
+          "strings_as_keyword": {
             "mapping": {
-              "doc_values": true,
               "ignore_above": 1024,
-              "index": "not_analyzed",
-              "type": "{dynamic_type}"
+              "type": "keyword"
             },
-            "match": "*"
+            "match_mapping_type": "string"
           }
         }
       ],
@@ -27,162 +25,150 @@
         "apache": {
           "properties": {
             "busyWorkers": {
-              "doc_values": "true",
-              "type": "integer"
+              "type": "long"
             },
             "bytesPerReq": {
-              "doc_values": "true",
               "type": "float"
             },
             "bytesPerSec": {
-              "doc_values": "true",
               "type": "float"
             },
             "connections": {
               "properties": {
                 "connsAsyncClosing": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "connsAsyncKeepAlive": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "connsAsyncWriting": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "connsTotal": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 }
               }
             },
             "cpu": {
               "properties": {
                 "cpuChildrenSystem": {
-                  "doc_values": "true",
                   "type": "float"
                 },
                 "cpuChildrenUser": {
-                  "doc_values": "true",
                   "type": "float"
                 },
                 "cpuLoad": {
-                  "doc_values": "true",
                   "type": "float"
                 },
                 "cpuSystem": {
-                  "doc_values": "true",
                   "type": "float"
                 },
                 "cpuUser": {
-                  "doc_values": "true",
                   "type": "float"
                 }
               }
             },
             "idleWorkers": {
-              "doc_values": "true",
-              "type": "integer"
+              "type": "long"
             },
             "load": {
               "properties": {
                 "load1": {
-                  "doc_values": "true",
                   "type": "float"
                 },
                 "load15": {
-                  "doc_values": "true",
                   "type": "float"
                 },
                 "load5": {
-                  "doc_values": "true",
                   "type": "float"
                 }
               }
             },
             "reqPerSec": {
-              "doc_values": "true",
               "type": "float"
             },
             "scoreboard": {
               "properties": {
                 "closingConnection": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "dnsLookup": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "gracefullyFinishing": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "idleCleanup": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "keepalive": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "logging": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "openSlot": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "readingRequest": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "sendingReply": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "startingUp": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "total": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "waitingForConnection": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 }
               }
             },
             "totalAccesses": {
-              "doc_values": "true",
-              "type": "integer"
+              "type": "long"
             },
             "totalKBytes": {
-              "doc_values": "true",
               "type": "long"
             },
             "uptime": {
               "properties": {
                 "serverUptimeSeconds": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 },
                 "uptime": {
-                  "doc_values": "true",
-                  "type": "integer"
+                  "type": "long"
                 }
               }
             }
           }
+        },
+        "beat": {
+          "properties": {
+            "hostname": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "name": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "version": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            }
+          }
+        },
+        "tags": {
+          "ignore_above": 1024,
+          "type": "keyword"
         }
       }
     }
   },
+  "order": 0,
   "settings": {
     "index.refresh_interval": "5s"
   },

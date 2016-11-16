@@ -1,14 +1,16 @@
 package beater
 
 import (
+	"fmt"
 	"net/url"
 	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
-	"github.com/elastic/beats/libbeat/cfgfile"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/libbeat/publisher"
+
+	cfg "github.com/radoondas/apachebeat/config"
 )
 
 const selector = "apachebeat"
@@ -16,91 +18,64 @@ const AUTO_STRING = "?auto"
 
 // ApacheBeat implements Beater interface and sends Apache HTTPD status using libbeat.
 type ApacheBeat struct {
-	// ApConfig holds configurations of Apachebeat parsed by libbeat.
+	config cfg.Config
 	urls   []*url.URL
-	period time.Duration
-
-	AbConfig ConfigSettings
-	events   publisher.Client
-	auth     bool
-	username string
-	password string
-
-	done chan struct{}
+	auth   bool
+	client publisher.Client
+	done   chan struct{}
 }
 
-func New() *ApacheBeat {
-	return &ApacheBeat{
-		done: make(chan struct{}),
+// Creates beater
+func New(b *beat.Beat, rawCfg *common.Config) (beat.Beater, error) {
+	config := cfg.DefaultConfig
+	if err := rawCfg.Unpack(&config); err != nil {
+		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
-}
 
-func (ab *ApacheBeat) Config(b *beat.Beat) error {
-	//read config file
-	err := cfgfile.Read(&ab.AbConfig, "")
+	bt := &ApacheBeat{
+		done:   make(chan struct{}),
+		config: config,
+		auth:   true,
+	}
+
+	err := bt.init(b)
 	if err != nil {
-		logp.Err("Error reading configuration file: %v", err)
-		return err
+		return nil, err
 	}
 
-	//define default URL if none provided
-	var urlConfig []string
-	if ab.AbConfig.Input.URLs != nil {
-		urlConfig = ab.AbConfig.Input.URLs
-	} else {
-		urlConfig = []string{"http://127.0.0.1/server-status"}
-	}
+	return bt, nil
+}
 
-	ab.urls = make([]*url.URL, len(urlConfig))
-	for i := 0; i < len(urlConfig); i++ {
-		u, err := url.Parse(urlConfig[i])
+/// *** Beater interface methods ***///
+func (ab *ApacheBeat) init(b *beat.Beat) error {
+
+	ab.urls = make([]*url.URL, len(ab.config.URLs))
+	for i := 0; i < len(ab.config.URLs); i++ {
+		u, err := url.Parse(ab.config.URLs[i])
 		if err != nil {
-			logp.Err("Invalid Apache HTTPD server status page: %v", err)
+			logp.Err("Invalid Apache HTTPD server status url: %v", err)
 			return err
 		}
 		ab.urls[i] = u
 	}
 
-	if ab.AbConfig.Input.Period != nil {
-		ab.period = time.Duration(*ab.AbConfig.Input.Period) * time.Second
-	} else {
-		ab.period = 10 * time.Second
+	//Disable authentication when no username or password is set
+	if ab.config.Authentication.Username == "" || ab.config.Authentication.Password == "" {
+		logp.Info("One of username or password IS NOT set.")
+		ab.auth = false
 	}
 
-	if ab.AbConfig.Input.Authentication.Username == nil || ab.AbConfig.Input.Authentication.Password == nil {
-		logp.Err("Username or password is not set.")
-		ab.auth = false
-	} else if *ab.AbConfig.Input.Authentication.Username == "" || *ab.AbConfig.Input.Authentication.Password == "" {
-		logp.Err("Username or password is not set.")
-		ab.auth = false
-	} else {
-		ab.username = *ab.AbConfig.Input.Authentication.Username
-		ab.password = *ab.AbConfig.Input.Authentication.Password
-		ab.auth = true
-		logp.Debug(selector, "Username %v", ab.username)
-		logp.Debug(selector, "Password %v", ab.password)
-	}
-
-	logp.Debug(selector, "Init apachebeat")
-	logp.Debug(selector, "Watch %v", ab.urls)
-	logp.Debug(selector, "Period %v", ab.period)
-
-	return nil
-}
-
-func (ab *ApacheBeat) Setup(b *beat.Beat) error {
-	ab.events = b.Publisher.Connect()
-	ab.done = make(chan struct{})
 	return nil
 }
 
 func (ab *ApacheBeat) Run(b *beat.Beat) error {
 	logp.Debug(selector, "Run apachebeat")
 
+	ab.client = b.Publisher.Connect()
 	//for each url
 	for _, u := range ab.urls {
 		go func(u *url.URL) {
-			ticker := time.NewTicker(ab.period)
+			ticker := time.NewTicker(ab.config.Period)
 			defer ticker.Stop()
 
 			for {
@@ -112,7 +87,6 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 
 				timerStart := time.Now()
 
-				//if eb.clusterStats {
 				logp.Debug(selector, "Cluster stats for url: %v", u)
 				serverStatus, error := ab.GetServerStatus(*u)
 				if error != nil {
@@ -128,12 +102,12 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 					}
 
 					logp.Debug(selector, "Server status event detail for %s: %v", u.String(), event)
-					ab.events.PublishEvent(event)
+					ab.client.PublishEvent(event)
 				}
 
 				timerEnd := time.Now()
 				duration := timerEnd.Sub(timerStart)
-				if duration.Nanoseconds() > ab.period.Nanoseconds() {
+				if duration.Nanoseconds() > ab.config.Period.Nanoseconds() {
 					logp.Warn("Ignoring tick(s) due to processing taking longer than one period")
 				}
 			}
@@ -146,11 +120,10 @@ func (ab *ApacheBeat) Run(b *beat.Beat) error {
 	return nil
 }
 
-func (ab *ApacheBeat) Cleanup(b *beat.Beat) error {
-	return nil
-}
-
 func (ab *ApacheBeat) Stop() {
-	logp.Debug(selector, "Stop Apachebeat")
-	close(ab.done)
+	logp.Info("Stopping Apachebeat")
+	if ab.done != nil {
+		ab.client.Close()
+		close(ab.done)
+	}
 }

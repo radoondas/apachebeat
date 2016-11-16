@@ -7,7 +7,7 @@ Folder **kibana** contains sample Kibana objects for quick start.
 Installation is the same as for all [dashboards](https://github.com/elastic/beats-dashboards) from official beats. Download [script](https://github.com/elastic/beats-dashboards/blob/master/load.sh) and place to folder **kibana**. To load the dashboards, execute the [script](https://github.com/elastic/beats-dashboards/blob/master/load.sh) pointing to the Elasticsearch HTTP URL:
 
 ```bash
-cd ~/workspace/go/src/github.com/radoondas/apachebeat/kibana
+cd ~/workspace/go/src/github.com/radoondas/apachebeat/etc/kibana
 # get the content of the file [import_dashboards.sh](https://github.com/elastic/beats/blob/master/dev-tools/import_dashboards.sh) and save on the disk
 chmod u+x load.sh
 ./import_dashboards.sh -url http://localhost:9200
