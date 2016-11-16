@@ -1,4 +1,5 @@
 package: github.com/radoondas/apachebeat
 import:
 - package: github.com/elastic/beats
-  version: 5.0.0
+  version: dad0e0977db606733aef2724004bd691e80a2e38
+#  version: 5.0.0
